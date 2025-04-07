@@ -1,13 +1,13 @@
 import { audioEngine } from '../../modules/audio/AudioEngine';
-import { IChord } from '@/types/guitar.types';
-import { IActiveChord, KeyboardControllerStatus } from './types';
+import { IActiveChord, IChord } from '@/types/guitar.types';
+import { KeyboardControllerStatus } from './types';
 
 export class KeyboardController {
-  private status: KeyboardControllerStatus = 'idle';
-  private activeChords: Map<number, IChord> = new Map();
-  private currentChord: IActiveChord | null = null;
-  private currentRegisterChord: IChord | null = null;
-  protected forceUpdate: (() => void) | null = null; // или public
+  private _status: KeyboardControllerStatus = 'idle';
+  private _activeChords: Map<number, IChord> = new Map();
+  private _currentChord: IActiveChord | null = null;
+  private _currentRegisterChord: IChord | null = null;
+  protected forceUpdate: (() => void) | null = null;
 
   constructor() {
     this.setupEventListeners();
@@ -15,7 +15,7 @@ export class KeyboardController {
 
   // Public API
   public setStatus(status: KeyboardControllerStatus) {
-    this.status = status;
+    this._status = status;
     if (status === 'recording') {
       // this.recordingBuffer = { strings: {} } as IChord;
     }
@@ -27,27 +27,23 @@ export class KeyboardController {
   }
 
   public getChord(id: number): IChord | undefined {
-    return this.activeChords.get(id);
+    return this._activeChords.get(id);
   }
 
   public getChords(): Record<number, IChord> {
-    return Object.fromEntries(this.activeChords.entries());
+    return Object.fromEntries(this._activeChords.entries());
   }
   
   public getStatus(): KeyboardControllerStatus {
-    return this.status;
-  }
-
-  getActiveChords(): Map<number, IChord> {
-    return this.activeChords;
+    return this._status;
   }
 
   setCurrentRegisterChord(chord: IChord) {
-    this.currentRegisterChord = chord
+    this._currentRegisterChord = chord
   }
 
   registerChord(key: number, chord: IChord) {
-    this.activeChords.set(key, chord);
+    this._activeChords.set(key, chord);
   }
 
   // Event Handling
@@ -57,15 +53,14 @@ export class KeyboardController {
   }
 
   private handleKeyDown = (e: KeyboardEvent) => {
-    if (this.status === 'disabled') return;
+    if (this._status === 'disabled') return;
 
     // Режим записи аккорда
-    if (this.status === 'registrating' && this.currentRegisterChord && e.key >= '1' && e.key <= '6') {
-      this.registerChord(+e.key - 1, this.currentRegisterChord);
-      this.currentRegisterChord = null;
+    if (this._status === 'registrating' && this._currentRegisterChord && e.key >= '1' && e.key <= '6') {
+      this.registerChord(+e.key - 1, this._currentRegisterChord);
+      this._currentRegisterChord = null;
       this.forceUpdate?.(); // Уведомляем Emulator о необходимости обновления
       this.setStatus('playing')
-      console.log(this.activeChords)
       return;
     }
 
@@ -74,36 +69,35 @@ export class KeyboardController {
       this.selectChord(+e.key - 1);
     }
 
-    if (this.currentChord && ['ArrowUp', 'ArrowDown'].includes(e.key)) {
+    if (this._currentChord && ['ArrowUp', 'ArrowDown'].includes(e.key)) {
       this.playCurrentChord(e.key === 'ArrowUp' ? 'asc' : 'desc');
     }
   };
 
   private handleKeyUp = (e: KeyboardEvent) => {
-    if (this.status === 'playing' && e.key >= '1' && e.key <= '6') {
-      this.currentChord = null;
+    if (this._status === 'playing' && e.key >= '1' && e.key <= '6') {
+      this._currentChord = null;
     }
   };
 
   // Core Logic
   private selectChord(key: number) {
-    const chord = this.activeChords.get(key);
+    const chord = this._activeChords.get(key);
     if (!chord) return;
 
-    this.currentChord = {
+    this._currentChord = {
       chord,
       timestamp: Date.now()
     };
 
-    if (this.status === 'idle') {
-      this.status = 'playing';
+    if (this._status === 'idle') {
+      this._status = 'playing';
     }
   }
 
   private playCurrentChord(direction: 'asc' | 'desc') {
-    if (!this.currentChord?.chord.strings) return; // Проверяем и strings на null
-    console.log(this.currentChord)
-    const { strings } = this.currentChord.chord;
+    if (!this._currentChord?.chord.strings) return; // Проверяем и strings на null
+    const { strings } = this._currentChord.chord;
     const stringValues = Object.values(strings); // Теперь strings точно объект
     
     const ordered = direction === 'asc' 
@@ -113,39 +107,10 @@ export class KeyboardController {
     console.log(ordered)
     ordered.forEach(({ note }, index) => {
       if (note) {
-        setTimeout(() => audioEngine.playSample(note), index * 100);
+        setTimeout(() => audioEngine.playSample(note), index * 50);
       }
     });
   }
-
-  private chordListeners: ((chords: Record<number, IChord>) => void)[] = [];
-
-  public subscribeToChords(callback: (chords: Record<number, IChord>) => void) {
-    this.chordListeners.push(callback);
-    return () => { /* unsubscribe logic */ };
-  }
-
-  // private saveChordToBuffer(key: number) {
-  //   if (!this.recordingBuffer) return;
-
-  //   // Здесь логика сохранения текущего состояния в буфер
-  //   // Например:
-  //   // this.recordingBuffer.strings[key] = this.getCurrentFretState();
-    
-  //   // Автоматический выход из режима после записи всех струн
-  //   if (Object.keys(this.recordingBuffer.strings).length === 6) {
-  //     this.status = 'idle';
-  //     this.saveRecordedChord();
-  //   }
-  // }
-
-  // private saveRecordedChord() {
-  //   if (!this.recordingBuffer) return;
-    
-  //   // Логика сохранения аккорда (например, в хранилище)
-  //   console.log('Recorded chord:', this.recordingBuffer);
-  //   this.recordingBuffer = null;
-  // }
 
   cleanup() {
     console.log('removed')

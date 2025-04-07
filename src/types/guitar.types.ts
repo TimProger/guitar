@@ -35,3 +35,8 @@ export interface IChord {
         E2: IFret;
     };
 }
+
+export interface IActiveChord {
+  chord: IChord;
+  timestamp: number;
+}

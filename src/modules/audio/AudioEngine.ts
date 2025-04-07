@@ -15,6 +15,7 @@ class AudioEngine {
       urls: samples,
       baseUrl: '/samples',
       release: 2,
+      volume: 1,
       onload: () => {
         console.log(`Samples for ${instrumentType} loaded`)
       },

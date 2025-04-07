@@ -1,15 +1,12 @@
 import { audioEngine } from './audio/AudioEngine';
 import { IFret, IChord, IStringNames } from '../types/guitar.types';
-// import { SampleManager } from './audio/SampleManager';
 import { KeyboardController } from './keyboard/KeyboardController';
 await audioEngine.init();
 
 type IStrings = Record<IStringNames, { frets: Record<string, IFret> }>
 
 export class GuitarInstrument {
-  // private sampleManager: SampleManager;
   private keyboardController: KeyboardController;
-  // private currentInstrument: string = '/guitar-acoustic';
   private _strings: IStrings;
 
   // Возвращает все струны с их ладами (копия _strings)
@@ -51,10 +48,6 @@ export class GuitarInstrument {
     this._strings = this.initStrings();
   }
 
-  public subscribeToChords(callback: (chords: Record<number, IChord>) => void) {
-    return this.keyboardController.subscribeToChords(callback);
-  }
-
   public setForceUpdate(callback: () => void) {
     this.keyboardController.setForceUpdate(callback);
   }
@@ -79,10 +72,6 @@ export class GuitarInstrument {
     
     return newStrings
   }
-
-  // private async loadInstrumentSamples() {
-  //   await this.sampleManager.loadSamples(this.currentInstrument);
-  // }
 
   private generateFrets(notes: string[]): Record<string, IFret> {
     return notes.reduce((acc, note, index) => ({
@@ -147,30 +136,5 @@ export class GuitarInstrument {
     } catch (error) {
       console.error('Error playing note:', note, error);
     }
-  }
-
-  public getActiveChords() {
-    return this.keyboardController.getActiveChords()
-  }
-
-  // private updateCurrentChord() {
-  //   this.currentChord.strings = {} as IChord['strings'];
-    
-  //   (Object.keys(this._strings) as IStringNames[]).forEach(stringName => {
-  //     const pressedFret = Object.values(this._strings[stringName].frets)
-  //       .find(fret => fret.isPressed);
-      
-  //     if (pressedFret && this.currentChord.strings) {
-  //       this.currentChord.strings[stringName] = pressedFret;
-  //     }
-  //   });
-  // }
-
-  resetSelection() {
-    (Object.keys(this._strings) as IStringNames[]).forEach(stringName => {
-      Object.keys(this._strings[stringName].frets).forEach(key => {
-        this._strings[stringName].frets[key].isPressed = false;
-      });
-    });
   }
 }
