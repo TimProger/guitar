@@ -1,0 +1,13 @@
+services:
+  frontend-production:
+    container_name: react-frontend-production
+    platform: linux/amd64
+    build:
+      context: .
+      args:
+        ENV_FILE: .env.production
+    ports:
+      - "4000:80" # Production frontend on port 4000
+    env_file:
+      - .env.production
+    restart: always

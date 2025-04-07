@@ -1,0 +1,13 @@
+services:
+  frontend-staging:
+    container_name: react-frontend-staging
+    platform: linux/amd64
+    build:
+      context: .
+      args:
+        ENV_FILE: .env.staging
+    ports:
+      - "4001:80" # Staging frontend on port 4001
+    env_file:
+      - .env.staging
+    restart: always

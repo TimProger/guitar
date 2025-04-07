@@ -1,0 +1,10 @@
+@import "../../_vars.scss";
+
+.guitar {
+  width: 90vw;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-between;
+}
