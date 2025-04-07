@@ -56,7 +56,7 @@ export class GuitarInstrument {
   }
 
   public setForceUpdate(callback: () => void) {
-    this.keyboardController.setForceUpdate(callback); // Вызываем публичный метод
+    this.keyboardController.setForceUpdate(callback);
   }
 
   private initStrings() {

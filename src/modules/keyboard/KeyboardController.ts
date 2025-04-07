@@ -65,6 +65,7 @@ export class KeyboardController {
       this.currentRegisterChord = null;
       this.forceUpdate?.(); // Уведомляем Emulator о необходимости обновления
       this.setStatus('playing')
+      console.log(this.activeChords)
       return;
     }
 
