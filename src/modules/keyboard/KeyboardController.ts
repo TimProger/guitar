@@ -4,23 +4,22 @@ import { DEFAULT_KEYBINDS } from './KeybindPresets';
 import { AudioEngine } from '../audio/AudioEngine';
 
 export class KeyboardController {
+  private _audioEngine: AudioEngine;
   private _status: KeyboardControllerStatus = 'idle';
   private _activeChords: Map<number, IChord> = new Map();
   private _currentChord: IActiveChord | null = null;
   private _currentRegisterChord: IChord | null = null;
   protected forceUpdate: (() => void) | null = null;
-  private audioEngine: AudioEngine;
 
   constructor(audioEngine: AudioEngine) {
-    this.audioEngine = audioEngine;
+    this._audioEngine = audioEngine;
     this.setupEventListeners();
   }
 
-  // Public API
   public setStatus(status: KeyboardControllerStatus) {
     this._status = status;
     if (status === 'recording') {
-      // this.recordingBuffer = { strings: {} } as IChord;
+      // Логика записи
     }
   }
 
@@ -49,7 +48,7 @@ export class KeyboardController {
     this._activeChords.set(key, chord);
   }
 
-  // Event Handling
+  // Обработка событий
   private setupEventListeners() {
     document.addEventListener('keydown', this.handleKeyDown);
     document.addEventListener('keyup', this.handleKeyUp);
@@ -62,7 +61,7 @@ export class KeyboardController {
     if (this._status === 'registrating' && this._currentRegisterChord && e.key >= DEFAULT_KEYBINDS.CHORD_SELECTION.min && e.key <= DEFAULT_KEYBINDS.CHORD_SELECTION.max) {
       this.registerChord(+e.key - 1, this._currentRegisterChord);
       this._currentRegisterChord = null;
-      this.forceUpdate?.(); // Уведомляем Emulator о необходимости обновления
+      this.forceUpdate?.(); // Уведомляем Instrument.ts о необходимости обновления
       this.setStatus('playing')
       return;
     }
@@ -83,7 +82,7 @@ export class KeyboardController {
     }
   };
 
-  // Core Logic
+  // Логика аккордов
   private selectChord(key: number) {
     const chord = this._activeChords.get(key);
     if (!chord) return;
@@ -110,7 +109,7 @@ export class KeyboardController {
     console.log(ordered)
     ordered.forEach(({ note }, index) => {
       if (note) {
-        setTimeout(() => this.audioEngine.playSample(note), index * 50);
+        setTimeout(() => this._audioEngine.playSample(note), index * 50);
       }
     });
   }

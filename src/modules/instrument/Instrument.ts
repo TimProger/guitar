@@ -6,15 +6,18 @@ import { AudioEngine } from '../audio/AudioEngine';
 
 type IStrings = Record<IStringNames, { frets: Record<string, IFret> }>
 
+type ISelectedGuitarType = 'guitar-acoustic'
+
 export class Instrument {
   private keyboardController: KeyboardController;
   private sampleManager: SampleManager;
   private audioEngine: AudioEngine;
   private _strings: IStrings;
+  private selectedGuitarType: ISelectedGuitarType = 'guitar-acoustic';
 
   // Возвращает все струны с их ладами (копия _strings)
   public getStringsData(): IStrings {
-    return JSON.parse(JSON.stringify(this._strings)); // Возвращаем глубокую копию
+    return JSON.parse(JSON.stringify(this._strings));
   }
 
   // Возвращает массив всех ладов для конкретной струны с их состоянием.
@@ -45,7 +48,7 @@ export class Instrument {
   }
 
   constructor() {
-    this.sampleManager = new SampleManager('guitar-acoustic'); // Тип гитары
+    this.sampleManager = new SampleManager(this.selectedGuitarType);
     this.audioEngine = new AudioEngine(this.sampleManager);
     this.audioEngine.init()
     this.keyboardController = new KeyboardController(this.audioEngine);
@@ -103,7 +106,7 @@ export class Instrument {
     (Object.keys(strings) as IStringNames[]).forEach((stringName) => {
       const string = strings[stringName];
       
-      // Перебор ладов с проверкой типа
+      // Перебор ладов
       Object.entries(string.frets).forEach(([_fretIndex, currentFret]) => {
         if (currentFret.isPressed) {
           chord.strings[stringName] = currentFret;
@@ -134,8 +137,6 @@ export class Instrument {
 
   private async playNote(note: string) {
     try {
-      // const fullNote = `${this.currentInstrument}/${note}.mp3`;
-      // const url = this.sampleManager.getSampleUrl(fullNote);
       await this.audioEngine.playSample(note);
     } catch (error) {
       console.error('Error playing note:', note, error);
