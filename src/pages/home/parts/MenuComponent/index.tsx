@@ -2,10 +2,10 @@
 import s from './styles.module.scss';
 import classNames from 'classnames';
 import { useMenu } from './useMenu';
-import { GuitarInstrument } from '@/modules/Instrument';
+import { Instrument } from '@/modules/instrument/Instrument';
 
 interface IMenuProps {
-    instrument: GuitarInstrument;
+    instrument: Instrument;
 }
 
 const MenuComponent: React.FC<IMenuProps> = ({ instrument }) => {

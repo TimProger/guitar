@@ -11,13 +11,18 @@ const NOTES = [
 export class SampleManager {
   private samplesCache: Map<string, SampleMap> = new Map();
   private baseUrl = '/samples';
+  private selectedGuitarType = 'guitar-acoustic';
+  
+  constructor(selectedGuitarType: string) {
+    this.selectedGuitarType = selectedGuitarType; // Тип гитары
+  }
 
   async loadSamples(instrumentType: string): Promise<SampleMap> {
     if (this.samplesCache.has(instrumentType)) {
       return this.samplesCache.get(instrumentType)!;
     }
 
-    const sampleMap: SampleMap = createSampleMap('/guitar-acoustic', NOTES);
+    const sampleMap: SampleMap = createSampleMap(`/${this.selectedGuitarType}`, NOTES);
 
     await this.validateSamples(sampleMap, instrumentType);
 

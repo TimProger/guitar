@@ -1,7 +1,7 @@
 import { Player, Sampler } from 'tone';
 import { SampleManager } from './SampleManager';
 
-class AudioEngine {
+export class AudioEngine {
   private sampler: Sampler | null = null;
   private activePlayers: Set<Player> = new Set();
 
@@ -37,5 +37,3 @@ class AudioEngine {
     this.init(type);
   }
 }
-
-export const audioEngine = new AudioEngine(new SampleManager());

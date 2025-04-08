@@ -1,12 +1,15 @@
-import { audioEngine } from './audio/AudioEngine';
-import { IFret, IChord, IStringNames } from '../types/guitar.types';
-import { KeyboardController } from './keyboard/KeyboardController';
-await audioEngine.init();
+import { IFret, IChord, IStringNames } from '../../types/guitar.types';
+import { KeyboardController } from '../keyboard/KeyboardController';
+import { generateNoteSequence } from '../utils/fretUtils';
+import { SampleManager } from '../audio/SampleManager';
+import { AudioEngine } from '../audio/AudioEngine';
 
 type IStrings = Record<IStringNames, { frets: Record<string, IFret> }>
 
-export class GuitarInstrument {
+export class Instrument {
   private keyboardController: KeyboardController;
+  private sampleManager: SampleManager;
+  private audioEngine: AudioEngine;
   private _strings: IStrings;
 
   // Возвращает все струны с их ладами (копия _strings)
@@ -42,9 +45,10 @@ export class GuitarInstrument {
   }
 
   constructor() {
-    // this.sampleManager = new SampleManager();
-    this.keyboardController = new KeyboardController();
-    // this.loadInstrumentSamples();
+    this.sampleManager = new SampleManager('guitar-acoustic'); // Тип гитары
+    this.audioEngine = new AudioEngine(this.sampleManager);
+    this.audioEngine.init()
+    this.keyboardController = new KeyboardController(this.audioEngine);
     this._strings = this.initStrings();
   }
 
@@ -56,12 +60,12 @@ export class GuitarInstrument {
 
     // Генерация нот под каждую струну
     const newStrings = {
-      E1: { frets: this.generateFrets(["E4", "F4", "F#4", "G4", "G#4", "A4", "A#4", "B4", "C5", "C#5", "D5", "D#5", "E5", "F5", "F#5", "G5", "G#5", "A5", "A#5", "B5"]) },
-      B: { frets: this.generateFrets(["B3", "C4", "C#4", "D4", "D#4", "E4", "F4", "F#4", "G4", "G#4", "A4", "A#4", "B4", "C5", "C#5", "D5", "D#5", "E5", "F5", "F#5"]) },
-      G: { frets: this.generateFrets(["G3", "G#3", "A3", "A#3", "B3", "C4", "C#4", "D4", "D#4", "E4", "F4", "F#4", "G4", "G#4", "A4", "A#4", "B4", "C5", "C#5", "D5"]) },
-      D: { frets: this.generateFrets(["D3", "D#3", "E3", "F3", "F#3", "G3", "G#3", "A3", "A#3", "B3", "C4", "C#4", "D4", "D#4", "E4", "F4", "F#4", "G4", "G#4", "A4"]) },
-      A: { frets: this.generateFrets(["A2", "A#2", "B2", "C3", "C#3", "D3", "D#3", "E3", "F3", "F#3", "G3", "G#3", "A3", "A#3", "B3", "C4", "C#4", "D4", "D#4", "E4"]) },
-      E2: { frets: this.generateFrets(["E2", "F2", "F#2", "G2", "G#2", "A2", "A#2", "B2", "C3", "C#3", "D3", "D#3", "E3", "F3", "F#3", "G3", "G#3", "A3", "A#3", "B3"]) }
+      E1: { frets: this.generateFrets(generateNoteSequence("E4", 20)) },
+      B: { frets: this.generateFrets(generateNoteSequence("B3", 20)) },
+      G: { frets: this.generateFrets(generateNoteSequence("G3", 20)) },
+      D: { frets: this.generateFrets(generateNoteSequence("D3", 20)) },
+      A: { frets: this.generateFrets(generateNoteSequence("A2", 20)) },
+      E2: { frets: this.generateFrets(generateNoteSequence("E2", 20)) }
     };
 
     // Задаю 0 ладу каждой струны isPressed = true
@@ -132,7 +136,7 @@ export class GuitarInstrument {
     try {
       // const fullNote = `${this.currentInstrument}/${note}.mp3`;
       // const url = this.sampleManager.getSampleUrl(fullNote);
-      await audioEngine.playSample(note);
+      await this.audioEngine.playSample(note);
     } catch (error) {
       console.error('Error playing note:', note, error);
     }

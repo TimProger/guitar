@@ -1,7 +1,6 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { IStringNames } from "@/types/guitar.types";
-// import { useKeyboard } from "@/hooks/useKeyboard";
-import { GuitarInstrument } from "../../modules/Instrument";
+import { Instrument } from "../../modules/instrument/Instrument";
 import StringComponent from "./parts/StringComponent";
 import s from './styles.module.scss';
 import MenuComponent from "./parts/MenuComponent";
@@ -9,16 +8,14 @@ import MenuComponent from "./parts/MenuComponent";
 interface IHomeProps {
 }
 
-// const instrument = new GuitarInstrument();
-
 const Home: React.FC<IHomeProps> = ({}) => {
 
-  const instrument = useMemo(() => new GuitarInstrument(), []);
+  const instrument = useMemo(() => new Instrument(), []);
   const forceUpdate = useForceUpdate();
 
   const pressFret = (stringName: IStringNames, _note: string, noteIndex: number) => {
     instrument.pressFret(stringName, noteIndex);
-    forceUpdate(); // Обновляем UI
+    forceUpdate();
   };
 
   const stringsData = instrument.getStringsData();

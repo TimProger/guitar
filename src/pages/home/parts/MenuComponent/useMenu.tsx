@@ -1,9 +1,9 @@
-import { GuitarInstrument } from "@/modules/Instrument";
+import { Instrument } from "@/modules/instrument/Instrument";
 import { IChord } from "@/types/guitar.types";
 import { useEffect, useState } from "react";
 
 interface IUseMenu {
-    instrument: GuitarInstrument;
+    instrument: Instrument;
 }
 
 export const useMenu = ({instrument}: IUseMenu) => {

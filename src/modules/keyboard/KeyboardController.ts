@@ -1,6 +1,7 @@
-import { audioEngine } from '../../modules/audio/AudioEngine';
 import { IActiveChord, IChord } from '@/types/guitar.types';
 import { KeyboardControllerStatus } from './types';
+import { DEFAULT_KEYBINDS } from './KeybindPresets';
+import { AudioEngine } from '../audio/AudioEngine';
 
 export class KeyboardController {
   private _status: KeyboardControllerStatus = 'idle';
@@ -8,8 +9,10 @@ export class KeyboardController {
   private _currentChord: IActiveChord | null = null;
   private _currentRegisterChord: IChord | null = null;
   protected forceUpdate: (() => void) | null = null;
+  private audioEngine: AudioEngine;
 
-  constructor() {
+  constructor(audioEngine: AudioEngine) {
+    this.audioEngine = audioEngine;
     this.setupEventListeners();
   }
 
@@ -56,7 +59,7 @@ export class KeyboardController {
     if (this._status === 'disabled') return;
 
     // Режим записи аккорда
-    if (this._status === 'registrating' && this._currentRegisterChord && e.key >= '1' && e.key <= '6') {
+    if (this._status === 'registrating' && this._currentRegisterChord && e.key >= DEFAULT_KEYBINDS.CHORD_SELECTION.min && e.key <= DEFAULT_KEYBINDS.CHORD_SELECTION.max) {
       this.registerChord(+e.key - 1, this._currentRegisterChord);
       this._currentRegisterChord = null;
       this.forceUpdate?.(); // Уведомляем Emulator о необходимости обновления
@@ -69,13 +72,13 @@ export class KeyboardController {
       this.selectChord(+e.key - 1);
     }
 
-    if (this._currentChord && ['ArrowUp', 'ArrowDown'].includes(e.key)) {
-      this.playCurrentChord(e.key === 'ArrowUp' ? 'asc' : 'desc');
+    if (this._currentChord && [DEFAULT_KEYBINDS.CHORD_PLAY.asc, DEFAULT_KEYBINDS.CHORD_PLAY.desc].includes(e.key)) {
+      this.playCurrentChord(e.key === DEFAULT_KEYBINDS.CHORD_PLAY.asc ? 'asc' : 'desc');
     }
   };
 
   private handleKeyUp = (e: KeyboardEvent) => {
-    if (this._status === 'playing' && e.key >= '1' && e.key <= '6') {
+    if (this._status === 'playing' && e.key >= DEFAULT_KEYBINDS.CHORD_SELECTION.min && e.key <= DEFAULT_KEYBINDS.CHORD_SELECTION.max) {
       this._currentChord = null;
     }
   };
@@ -107,7 +110,7 @@ export class KeyboardController {
     console.log(ordered)
     ordered.forEach(({ note }, index) => {
       if (note) {
-        setTimeout(() => audioEngine.playSample(note), index * 50);
+        setTimeout(() => this.audioEngine.playSample(note), index * 50);
       }
     });
   }
