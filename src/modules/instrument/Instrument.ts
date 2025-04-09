@@ -3,6 +3,7 @@ import { KeyboardController } from '../keyboard/KeyboardController';
 import { generateNoteSequence } from '../utils/fretUtils';
 import { SampleManager } from '../audio/SampleManager';
 import { AudioEngine } from '../audio/AudioEngine';
+import InstrumentSettings from './InstrumentSettings';
 
 type IStrings = Record<IStringNames, { frets: Record<string, IFret> }>
 
@@ -10,10 +11,20 @@ type ISelectedGuitarType = 'guitar-acoustic'
 
 export class Instrument {
   private keyboardController: KeyboardController;
+  private instrumentSettings: InstrumentSettings;
   private sampleManager: SampleManager;
   private audioEngine: AudioEngine;
   private _strings: IStrings;
   private selectedGuitarType: ISelectedGuitarType = 'guitar-acoustic';
+  private currentTuning: string[];
+
+  private getDefaultTuning(): string[] {
+    return ['E2', 'A2', 'D3', 'G3', 'B3', 'E4'];
+  }
+
+  public setTuning(tuning: string[]) {
+    this.currentTuning = tuning;
+  }
 
   // Возвращает все струны с их ладами (копия _strings)
   public getStringsData(): IStrings {
@@ -48,10 +59,12 @@ export class Instrument {
   }
 
   constructor() {
+    this.currentTuning = this.getDefaultTuning()
     this.sampleManager = new SampleManager(this.selectedGuitarType);
     this.audioEngine = new AudioEngine(this.sampleManager);
     this.audioEngine.init()
     this.keyboardController = new KeyboardController(this.audioEngine);
+    this.instrumentSettings = new InstrumentSettings(this.audioEngine, this);
     this._strings = this.initStrings();
   }
 
@@ -63,12 +76,12 @@ export class Instrument {
 
     // Генерация нот под каждую струну
     const newStrings = {
-      E1: { frets: this.generateFrets(generateNoteSequence("E4", 20)) },
-      B: { frets: this.generateFrets(generateNoteSequence("B3", 20)) },
-      G: { frets: this.generateFrets(generateNoteSequence("G3", 20)) },
-      D: { frets: this.generateFrets(generateNoteSequence("D3", 20)) },
-      A: { frets: this.generateFrets(generateNoteSequence("A2", 20)) },
-      E2: { frets: this.generateFrets(generateNoteSequence("E2", 20)) }
+      E1: { frets: this.generateFrets(generateNoteSequence(this.currentTuning[5], 20)) },
+      B: { frets: this.generateFrets(generateNoteSequence(this.currentTuning[4], 20)) },
+      G: { frets: this.generateFrets(generateNoteSequence(this.currentTuning[2], 20)) },
+      D: { frets: this.generateFrets(generateNoteSequence(this.currentTuning[2], 20)) },
+      A: { frets: this.generateFrets(generateNoteSequence(this.currentTuning[1], 20)) },
+      E2: { frets: this.generateFrets(generateNoteSequence(this.currentTuning[0], 20)) }
     };
 
     // Задаю 0 ладу каждой струны isPressed = true
@@ -119,6 +132,7 @@ export class Instrument {
   }
 
   public async pressFret(stringName: IStringNames, fretIndex: number) {
+    this.instrumentSettings.setVolume(6)
 
     // Сброс всех ладов на струне
     Object.values(this._strings[stringName].frets).forEach(fret => {
