@@ -106,7 +106,6 @@ export class KeyboardController {
       ? [...stringValues].reverse() 
       : stringValues;
   
-    console.log(ordered)
     ordered.forEach(({ note }, index) => {
       if (note) {
         setTimeout(() => this._audioEngine.playSample(note), index * 50);

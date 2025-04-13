@@ -59,7 +59,6 @@ export class AudioEngine {
   async init(instrumentType: string = 'guitar-acoustic') {
     this.cleanup(); // Очистка перед инициализацией
     const samples = await this.sampleManager.loadSamples(instrumentType);
-    console.log(samples)
     this.sampler = new Sampler({
       urls: samples,
       baseUrl: '/samples',

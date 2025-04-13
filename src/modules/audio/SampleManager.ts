@@ -23,7 +23,6 @@ export class SampleManager {
     }
 
     const sampleMap: SampleMap = createSampleMap(`/${this.selectedGuitarType}`, NOTES);
-    console.log(sampleMap)
 
     await this.validateSamples(sampleMap, instrumentType);
 
