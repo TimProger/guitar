@@ -33,6 +33,7 @@ export class KeyboardController {
   }
 
   public getChords(): Record<number, IChord> {
+    console.log(1, Object.fromEntries(this._activeChords.entries()))
     return Object.fromEntries(this._activeChords.entries());
   }
   

@@ -5,7 +5,7 @@ import { SampleManager } from '../audio/SampleManager';
 import { AudioEngine } from '../audio/AudioEngine';
 import InstrumentSettings from './InstrumentSettings';
 
-type IStrings = Record<IStringNames, { frets: Record<string, IFret> }>
+export type IStrings = Record<IStringNames, { frets: Record<string, IFret> }>
 
 type ISelectedGuitarType = 'guitar-acoustic'
 
@@ -78,10 +78,10 @@ export class Instrument {
     const newStrings = {
       E1: { frets: this.generateFrets(generateNoteSequence(this.currentTuning[5], 20)) },
       B: { frets: this.generateFrets(generateNoteSequence(this.currentTuning[4], 20)) },
-      G: { frets: this.generateFrets(generateNoteSequence(this.currentTuning[2], 20)) },
+      G: { frets: this.generateFrets(generateNoteSequence(this.currentTuning[3], 20)) },
       D: { frets: this.generateFrets(generateNoteSequence(this.currentTuning[2], 20)) },
       A: { frets: this.generateFrets(generateNoteSequence(this.currentTuning[1], 20)) },
-      E2: { frets: this.generateFrets(generateNoteSequence(this.currentTuning[0], 20)) }
+      E2: { frets: this.generateFrets(generateNoteSequence(this.currentTuning[0], 20)) },
     };
 
     // Задаю 0 ладу каждой струны isPressed = true
@@ -104,12 +104,12 @@ export class Instrument {
     const chord: IChord = {
       name: '',
       strings: {
-        E1: { index: 0, note: '', isPressed: false},
-        B: { index: 0, note: '', isPressed: false},
-        G: { index: 0, note: '', isPressed: false},
-        D: { index: 0, note: '', isPressed: false},
-        A: { index: 0, note: '', isPressed: false},
-        E2: { index: 0, note: '', isPressed: false},
+        E2: { index: -1, note: '', isPressed: false},
+        A: { index: -1, note: '', isPressed: false},
+        D: { index: -1, note: '', isPressed: false},
+        G: { index: -1, note: '', isPressed: false},
+        B: { index: -1, note: '', isPressed: false},
+        E1: { index: -1, note: '', isPressed: false},
       },
     };
 
@@ -133,14 +133,15 @@ export class Instrument {
 
   public async pressFret(stringName: IStringNames, fretIndex: number) {
     this.instrumentSettings.setVolume(6)
+    const val = JSON.parse(JSON.stringify(this._strings[stringName].frets[fretIndex]))
 
     // Сброс всех ладов на струне
     Object.values(this._strings[stringName].frets).forEach(fret => {
       fret.isPressed = false;
     });
 
-    // Обновляем состояние ладов
-    this._strings[stringName].frets[fretIndex].isPressed = true;
+    // Установка состояния для конкретного лада
+    this._strings[stringName].frets[fretIndex].isPressed = !val.isPressed;
 
     // Получаем ноту для воспроизведения
     const note = this._strings[stringName].frets[fretIndex].note;

@@ -15,25 +15,25 @@ export interface IString {
 
 // Интерфейс для струны
 export interface IStrings {
-    E1: IString;
-    B: IString;
-    G: IString;
-    D: IString;
-    A: IString;
-    E2: IString;
+  E2: IString;
+  A: IString;
+  D: IString;
+  G: IString;
+  B: IString;
+  E1: IString;
 }
 
 // Интерфейс для аккорда
 export interface IChord {
-    name: string;
-    strings: {
-        E1: IFret;
-        B: IFret;
-        G: IFret;
-        D: IFret;
-        A: IFret;
-        E2: IFret;
-    };
+  name: string;
+  strings: {
+    E1: IFret;
+    B: IFret;
+    G: IFret;
+    D: IFret;
+    A: IFret;
+    E2: IFret;
+  };
 }
 
 export interface IActiveChord {

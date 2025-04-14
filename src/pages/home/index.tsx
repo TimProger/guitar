@@ -21,16 +21,22 @@ const Home: React.FC<IHomeProps> = ({}) => {
   const stringsData = instrument.getStringsData();
 
   return (
-    <div className={s.guitar}>
-      {Object.keys(stringsData).map((stringName) => (
-        <StringComponent
-          key={stringName}
-          name={stringName as IStringNames}
-          frets={stringsData[stringName as IStringNames].frets}
-          pressFret={pressFret}
-        />
-      ))}
-      <MenuComponent instrument={instrument} />
+    <div className={s.main}>
+      <div className={s.guitar}>
+        <div className={s.strings}>
+          {Object.keys(stringsData).map((stringName) => (
+            <StringComponent
+              key={stringName}
+              name={stringName as IStringNames}
+              frets={stringsData[stringName as IStringNames].frets}
+              pressFret={pressFret}
+            />
+          ))}
+        </div>
+      </div>
+      <div className={s.menu}>
+        <MenuComponent instrument={instrument} />
+      </div>
     </div>
   )
 }

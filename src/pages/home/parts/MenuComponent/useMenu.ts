@@ -8,7 +8,7 @@ interface IUseMenu {
 
 export const useMenu = ({instrument}: IUseMenu) => {
 
-    const [page, setPage] = useState<'chords' | 'settings'>('chords')
+    const [page, setPage] = useState<'chords' | 'settings'>('settings')
     const [selectedChordId, setSelectedChordId] = useState<number | null>(null)
     const [activeChords, setActiveChords] = useState<Record<number, IChord>>([])
 

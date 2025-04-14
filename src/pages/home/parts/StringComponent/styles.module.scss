@@ -1,38 +1,43 @@
 .string {
-  width: 100%;
-  margin: 20px 0;
+  width: auto;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
+  gap: 10px;
+  color: #dfdcdc;
 
   .name {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
     font-weight: bold;
-    margin-bottom: 10px;
+    width: 30px;
   }
   
   .frets {
     width: 100%;
     display: flex;
-    justify-content: space-between;
+    gap: 10px;
   
     .fret {
-      width: 40px;
-      height: 40px;
+      width: 30px;
+      height: 30px;
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 1px solid #000;
+      background: #1e1e1e;
+      border: 1px solid #333;
+      border-radius: 2px;
       cursor: pointer;
-      font-size: 12px;
+      font-size: 10px;
       transition: background-color 0.3s;
     
       &_pressed {
-        background-color: #4CAF50; /* Зеленый цвет для нажатых ладов */
-        color: white;
+        background-color: #d17112; /* Зеленый цвет для нажатых ладов */
       }
       
       &:hover {
-        background-color: #f0f0f0;
+        background-color: #747272; 
       }
     }
   }

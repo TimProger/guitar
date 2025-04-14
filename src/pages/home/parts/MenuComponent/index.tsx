@@ -3,6 +3,7 @@ import s from './styles.module.scss';
 import classNames from 'classnames';
 import { useMenu } from './useMenu';
 import { Instrument } from '@/modules/instrument/Instrument';
+import Chord from './Chord/Chord';
 
 interface IMenuProps {
     instrument: Instrument;
@@ -27,20 +28,10 @@ const MenuComponent: React.FC<IMenuProps> = ({ instrument }) => {
                         +
                     </div>
                     {chordPositions.map((position) => {
-                        const chord = activeChords[position]; // Берём аккорд по позиции (если есть)
-                        
-                        return chord ? (
-                            <div key={position} className={s.chord}>
-                                <p>{chord.strings.E1.note} {chord.strings.E1.index}</p>
-                                <p>{chord.strings.B.note} {chord.strings.B.index}</p>
-                                <p>{chord.strings.G.note} {chord.strings.G.index}</p>
-                                <p>{chord.strings.D.note} {chord.strings.D.index}</p>
-                                <p>{chord.strings.A.note} {chord.strings.A.index}</p>
-                                <p>{chord.strings.E2.note} {chord.strings.E2.index}</p>
-                            </div>
-                        ) : (
-                            <div key={position} className={s.chord}></div>
-                        );
+                        return <Chord
+                                    key={position}
+                                    chord={activeChords[position]}
+                                />
                     })}
                 </div>)
             case 'settings':
@@ -50,15 +41,28 @@ const MenuComponent: React.FC<IMenuProps> = ({ instrument }) => {
 
     return (
         <div className={s.menu}>
-            <div className={s.tabs}>
-                <div onClick={() => setPage('chords')}>
-                    Аккорды
+            <div className={s.container}>
+                <div className={s.tabs}>
+                    <div onClick={() => setPage('settings')}>
+                        Настройки
+                    </div>
+                    <div onClick={() => setPage('chords')}>
+                        Аккорды
+                    </div>
+                    <div onClick={() => setPage('settings')}>
+                        Настройки
+                    </div>
+                    <div onClick={() => setPage('chords')}>
+                        Аккорды
+                    </div>
+                    <div onClick={() => setPage('settings')}>
+                        Настройки
+                    </div>
                 </div>
-                <div onClick={() => setPage('settings')}>
-                    Настройки
+                <div className={s.page}>
+                    {displayPages()}
                 </div>
             </div>
-            {displayPages()}
         </div>
     );
 };
