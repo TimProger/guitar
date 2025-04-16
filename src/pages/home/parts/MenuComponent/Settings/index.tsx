@@ -22,6 +22,7 @@ const Settings: React.FC<ISettingsProps> = ({ volume, tuning, onVolumeChange, on
         note: note.includes('#') ? note.split('#')[0] : note.split('')[0],
         number: note.includes('#') ? +note.split('#')[1] : +note.split('')[1],
     })).reverse());
+    const [release, setRelease] = useState<number>(1);
 
     const handleTuningChange = (type: 'note' | 'number', index: number, value: string) => {
         switch (type) {
@@ -102,10 +103,10 @@ const Settings: React.FC<ISettingsProps> = ({ volume, tuning, onVolumeChange, on
                         min="1"
                         max="10"
                         step="1"
-                        value={volume}
-                        onChange={(e) => onVolumeChange(Number(e.target.value))}
+                        value={release}
+                        onChange={(e) => setRelease(Number(e.target.value))}
                     />
-                    <span>{volume}</span>
+                    <span>{release}</span>
                 </div>
             </div>
         </div>

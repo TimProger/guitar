@@ -28,7 +28,7 @@ const MenuComponent: React.FC<IMenuProps> = ({ setStringsData, instrument }) => 
     const displayPages = () => {
         switch(page){
             case 'chords':
-                const chordPositions = Array.from({ length: 6 }, (_, i) => i);
+                const chordPositions = Array.from({ length: 8 }, (_, i) => i);
                 return (<div className={s.chords}>
                     <div onClick={() => startRegistration()} className={classNames(s.chord, s.chord_add, {[s.chord_active]: selectedChordId === -1})}>
                         +

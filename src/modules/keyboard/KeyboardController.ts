@@ -71,7 +71,7 @@ export class KeyboardController {
     }
 
     // Нормальный режим работы
-    if (e.key >= '1' && e.key <= '6') {
+    if (e.key >= DEFAULT_KEYBINDS.CHORD_SELECTION.min && e.key <= DEFAULT_KEYBINDS.CHORD_SELECTION.max) {
       this.selectChord(+e.key - 1);
       this.forceUpdate?.(); // Уведомляем Instrument.ts о необходимости обновления
     }

@@ -27,13 +27,16 @@ const Home: React.FC<IHomeProps> = ({}) => {
   return (
     <div className={s.main}>
       <div className={s.guitar}>
+        <div className={s.container}></div>
+        <img src="/images/guitar.png" alt="guitar_img" />
         <div className={s.strings}>
-          {stringsData && Object.keys(stringsData).map((stringName) => (
+          {stringsData && Object.keys(stringsData).map((stringName, index) => (
             <StringComponent
               key={stringName}
               name={stringName as IStringNames}
               frets={stringsData[stringName as IStringNames].frets}
               pressFret={pressFret}
+              index={index}
             />
           ))}
         </div>

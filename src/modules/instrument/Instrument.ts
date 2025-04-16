@@ -110,12 +110,12 @@ export class Instrument {
 
     // Генерация нот под каждую струну
     const newStrings = {
-      E1: { frets: this.generateFrets(generateNoteSequence(this.currentTuning[5], 20)) },
-      B: { frets: this.generateFrets(generateNoteSequence(this.currentTuning[4], 20)) },
-      G: { frets: this.generateFrets(generateNoteSequence(this.currentTuning[3], 20)) },
-      D: { frets: this.generateFrets(generateNoteSequence(this.currentTuning[2], 20)) },
-      A: { frets: this.generateFrets(generateNoteSequence(this.currentTuning[1], 20)) },
-      E2: { frets: this.generateFrets(generateNoteSequence(this.currentTuning[0], 20)) },
+      E1: { frets: this.generateFrets(generateNoteSequence(this.currentTuning[5], 21)) },
+      B: { frets: this.generateFrets(generateNoteSequence(this.currentTuning[4], 21)) },
+      G: { frets: this.generateFrets(generateNoteSequence(this.currentTuning[3], 21)) },
+      D: { frets: this.generateFrets(generateNoteSequence(this.currentTuning[2], 21)) },
+      A: { frets: this.generateFrets(generateNoteSequence(this.currentTuning[1], 21)) },
+      E2: { frets: this.generateFrets(generateNoteSequence(this.currentTuning[0], 21)) },
     };
 
     // Задаю 0 ладу каждой струны isPressed = true
@@ -180,8 +180,10 @@ export class Instrument {
     // Получаем ноту для воспроизведения
     const note = this._strings[stringName].frets[fretIndex].note;
     
-    // Воспроизводим звук
-    await this.playNote(note);
+    if(!val.isPressed){
+      // Воспроизводим звук
+      await this.playNote(note);
+    }
 
     this.triggerUpdate(); // Обновляем состояние компонента
   }
