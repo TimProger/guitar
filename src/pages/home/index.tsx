@@ -1,6 +1,6 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { IStringNames } from "@/types/guitar.types";
-import { Instrument } from "../../modules/instrument/Instrument";
+import { Instrument, IStrings } from "../../modules/instrument/Instrument";
 import StringComponent from "./parts/StringComponent";
 import s from './styles.module.scss';
 import MenuComponent from "./parts/MenuComponent";
@@ -11,20 +11,24 @@ interface IHomeProps {
 const Home: React.FC<IHomeProps> = ({}) => {
 
   const instrument = useMemo(() => new Instrument(), []);
-  const forceUpdate = useForceUpdate();
+  const [stringsData, setStringsData] = useState<IStrings | null>(null)
 
   const pressFret = (stringName: IStringNames, _note: string, noteIndex: number) => {
     instrument.pressFret(stringName, noteIndex);
-    forceUpdate();
+    // forceUpdate({});
   };
 
-  const stringsData = instrument.getStringsData();
+  useEffect(() => {
+    if(instrument){
+      setStringsData(instrument.getStringsData())
+    }
+  }, [instrument]);
 
   return (
     <div className={s.main}>
       <div className={s.guitar}>
         <div className={s.strings}>
-          {Object.keys(stringsData).map((stringName) => (
+          {stringsData && Object.keys(stringsData).map((stringName) => (
             <StringComponent
               key={stringName}
               name={stringName as IStringNames}
@@ -35,15 +39,11 @@ const Home: React.FC<IHomeProps> = ({}) => {
         </div>
       </div>
       <div className={s.menu}>
-        <MenuComponent instrument={instrument} />
+        <MenuComponent setStringsData={setStringsData} instrument={instrument} />
       </div>
     </div>
   )
 }
 
-export function useForceUpdate() {
-  const [, setValue] = useState(0);
-  return useCallback(() => setValue(v => v + 1), []);
-}
 
 export default Home

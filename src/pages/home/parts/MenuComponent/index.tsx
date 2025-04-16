@@ -4,20 +4,26 @@ import classNames from 'classnames';
 import { useMenu } from './useMenu';
 import { Instrument } from '@/modules/instrument/Instrument';
 import Chord from './Chord/Chord';
+import Settings from './Settings';
 
 interface IMenuProps {
+    setStringsData: any
     instrument: Instrument;
 }
 
-const MenuComponent: React.FC<IMenuProps> = ({ instrument }) => {
+const MenuComponent: React.FC<IMenuProps> = ({ setStringsData, instrument }) => {
 
     const {
         page,
         setPage,
         activeChords,
         selectedChordId,
+        volume,
+        tuning,
+        updateVolume,
+        updateTuning,
         startRegistration
-    } = useMenu({instrument})
+    } = useMenu({setStringsData, instrument})
 
     const displayPages = () => {
         switch(page){
@@ -29,13 +35,20 @@ const MenuComponent: React.FC<IMenuProps> = ({ instrument }) => {
                     </div>
                     {chordPositions.map((position) => {
                         return <Chord
+                                    selectedChordId={selectedChordId}
+                                    position={position}
                                     key={position}
                                     chord={activeChords[position]}
                                 />
                     })}
                 </div>)
             case 'settings':
-                return <div>Настройки</div>
+                return <Settings
+                            volume={volume}
+                            tuning={tuning}
+                            onVolumeChange={updateVolume}
+                            onTuningChange={updateTuning}
+                        />
         }
     }
 
@@ -48,15 +61,6 @@ const MenuComponent: React.FC<IMenuProps> = ({ instrument }) => {
                     </div>
                     <div onClick={() => setPage('chords')}>
                         Аккорды
-                    </div>
-                    <div onClick={() => setPage('settings')}>
-                        Настройки
-                    </div>
-                    <div onClick={() => setPage('chords')}>
-                        Аккорды
-                    </div>
-                    <div onClick={() => setPage('settings')}>
-                        Настройки
                     </div>
                 </div>
                 <div className={s.page}>

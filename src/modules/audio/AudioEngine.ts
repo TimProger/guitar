@@ -3,34 +3,11 @@ import { SampleManager } from './SampleManager';
 
 interface IAudioSettings {
   guitar: IGuitarSettings;
-  effects: IAudioEffects;
 }
 
 interface IGuitarSettings {
   release: number;
   volume: number;
-}
-
-interface IAudioEffects {
-  reverb?: {
-    decay: number;  // Время затухания (сек)
-    wet: number;    // Уровень эффекта (0-1)
-  };
-  distortion?: {
-    amount: number; // Уровень искажения (0-1)
-    wet: number;
-  };
-  chorus?: {
-    frequency: number; // Частота модуляции (Гц)
-    delayTime: number; // Задержка (мс)
-    depth: number;    // Глубина (0-1)
-    wet: number;
-  };
-  filter?: {
-    type: 'lowpass' | 'highpass' | 'bandpass';
-    frequency: number; // Частота среза (Гц)
-    Q: number;        // Резонанс
-  };
 }
 
 export class AudioEngine {
@@ -41,7 +18,6 @@ export class AudioEngine {
       release: 2,
       volume: 1
     },
-    effects: {}
   };
 
   constructor(private sampleManager: SampleManager) {
@@ -63,7 +39,7 @@ export class AudioEngine {
       urls: samples,
       baseUrl: '/samples',
       release: this.settings.guitar.release,
-      volume: this.settings.guitar.volume,
+      volume: this.settings.guitar.volume-8,
       onload: () => {
         console.log(`Samples for ${instrumentType} loaded`)
       },

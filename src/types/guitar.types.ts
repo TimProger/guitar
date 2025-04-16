@@ -37,6 +37,8 @@ export interface IChord {
 }
 
 export interface IActiveChord {
+  id: number;
+  index: number;
   chord: IChord;
   timestamp: number;
 }

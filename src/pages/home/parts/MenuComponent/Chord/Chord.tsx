@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import s from './styles.module.scss';
 import { IChord } from '@/types/guitar.types';
+import classNames from 'classnames';
 
 interface ChordDiagramProps {
+  selectedChordId: number | null;
+  position: number;
   chord: IChord;
 }
 
-const ChordDiagram: React.FC<ChordDiagramProps> = ({ chord }) => {
+const ChordDiagram: React.FC<ChordDiagramProps> = ({ position, selectedChordId, chord }) => {
 
   const [minFret, setMinFret] = useState<number>(0);
   
@@ -33,7 +36,7 @@ const ChordDiagram: React.FC<ChordDiagramProps> = ({ chord }) => {
   if(!chord) return <div className={s.chord}></div>; // Если аккорд не передан, ничего не отображаем
 
   return (
-    <div className={s.chord}>
+    <div className={classNames(s.chord, {[s.chord_active]: position === selectedChordId})}>
       <div className={s.fretboard}>
         <div className={s['fret-number']}></div>
         

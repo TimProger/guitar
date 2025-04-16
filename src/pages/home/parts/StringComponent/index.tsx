@@ -13,7 +13,7 @@ interface StringProps {
 const StringComponent: React.FC<StringProps> = ({ name, frets, pressFret }) => {
     return (
     <div className={s.string}>
-        <div className={s.name}>{name}</div>
+        <div className={s.name}>{name === 'E2' ? 'E' : name === 'E1' ? 'e' : name}</div>
         <div className={s.frets}>
             {Object.keys(frets).map((fretId, noteIndex) => (
                 <div

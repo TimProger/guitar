@@ -28,12 +28,15 @@ export class KeyboardController {
     this.forceUpdate = callback;
   }
 
+  public getSelectedChordId(): number | null {
+    return this._currentChord ? this._currentChord.id : null;
+  }
+
   public getChord(id: number): IChord | undefined {
     return this._activeChords.get(id);
   }
 
   public getChords(): Record<number, IChord> {
-    console.log(1, Object.fromEntries(this._activeChords.entries()))
     return Object.fromEntries(this._activeChords.entries());
   }
   
@@ -70,6 +73,7 @@ export class KeyboardController {
     // Нормальный режим работы
     if (e.key >= '1' && e.key <= '6') {
       this.selectChord(+e.key - 1);
+      this.forceUpdate?.(); // Уведомляем Instrument.ts о необходимости обновления
     }
 
     if (this._currentChord && [DEFAULT_KEYBINDS.CHORD_PLAY.asc, DEFAULT_KEYBINDS.CHORD_PLAY.desc].includes(e.key)) {
@@ -80,6 +84,7 @@ export class KeyboardController {
   private handleKeyUp = (e: KeyboardEvent) => {
     if (this._status === 'playing' && e.key >= DEFAULT_KEYBINDS.CHORD_SELECTION.min && e.key <= DEFAULT_KEYBINDS.CHORD_SELECTION.max) {
       this._currentChord = null;
+      this.forceUpdate?.(); // Уведомляем Instrument.ts о необходимости обновления
     }
   };
 
@@ -89,6 +94,8 @@ export class KeyboardController {
     if (!chord) return;
 
     this._currentChord = {
+      id: key,
+      index: key,
       chord,
       timestamp: Date.now()
     };

@@ -16,14 +16,46 @@ export class Instrument {
   private audioEngine: AudioEngine;
   private _strings: IStrings;
   private selectedGuitarType: ISelectedGuitarType = 'guitar-acoustic';
-  private currentTuning: string[];
+  public currentTuning: string[];
+  private settingsSubscriptions: (() => void)[] = [];
+  private forceUpdateCallback: (() => void) | null = null;
 
   private getDefaultTuning(): string[] {
     return ['E2', 'A2', 'D3', 'G3', 'B3', 'E4'];
   }
 
+  public getKeyboardController() {
+    return this.keyboardController;
+  }
+
+  public getCurrentTuning() {
+    return this.currentTuning;
+  }  
+  
+  public setForceUpdate(callback: (() => void)) { // Установка колбэка для обновления компонента
+    this.forceUpdateCallback = callback;
+    this.keyboardController.setForceUpdate(callback); // Передаем колбэк в KeyboardController
+  }
+
+  public triggerUpdate() { // Триггер обновления компонента
+    if (this.forceUpdateCallback) {
+      this.forceUpdateCallback();
+    }
+  }
+
+  public setVolume(level: number) {
+    this.audioEngine.setVolume(level);
+    this.audioEngine.init();
+  }
+
   public setTuning(tuning: string[]) {
-    this.currentTuning = tuning;
+    this.currentTuning = [...tuning];
+    this._strings = this.initStrings(); // Пересоздаем струны с новым строем
+    this.triggerUpdate();
+  }
+
+  public dispose() {
+    this.settingsSubscriptions.forEach(unsubscribe => unsubscribe());
   }
 
   // Возвращает все струны с их ладами (копия _strings)
@@ -63,13 +95,15 @@ export class Instrument {
     this.sampleManager = new SampleManager(this.selectedGuitarType);
     this.audioEngine = new AudioEngine(this.sampleManager);
     this.audioEngine.init()
-    this.keyboardController = new KeyboardController(this.audioEngine);
     this.instrumentSettings = new InstrumentSettings(this.audioEngine, this);
+    this.instrumentSettings.setTuning('standard');
+    this.keyboardController = new KeyboardController(this.audioEngine);
     this._strings = this.initStrings();
-  }
 
-  public setForceUpdate(callback: () => void) {
-    this.keyboardController.setForceUpdate(callback);
+    // Подписка на изменения настроек
+    this.settingsSubscriptions.push(
+      this.instrumentSettings.subscribe(() => this.triggerUpdate())
+    );
   }
 
   private initStrings() {
@@ -148,6 +182,8 @@ export class Instrument {
     
     // Воспроизводим звук
     await this.playNote(note);
+
+    this.triggerUpdate(); // Обновляем состояние компонента
   }
 
   private async playNote(note: string) {
