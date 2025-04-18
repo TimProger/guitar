@@ -56,7 +56,7 @@ const Home: React.FC<IHomeProps> = ({}) => {
               index={index}
             />
           ))}
-          <button onClick={buttonHandler} >кликнsss</button>
+          <button onClick={buttonHandler} >кликнsss2222</button>
         </div>
       </div>
       <div className={s.menu}>
