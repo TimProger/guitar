@@ -1,4 +1,4 @@
-import { Player, Sampler } from 'tone';
+import { Player, Sampler, Time, now } from 'tone';
 import { SampleManager } from './SampleManager';
 import { API_BASE_URL } from '../../http/axios';
 
@@ -20,6 +20,12 @@ export class AudioEngine {
       volume: 1
     },
   };
+  public recordedNotes: {
+    note: string;
+    time: number;
+    duration: string;
+    velocity: number;
+  }[] = [];
 
   constructor(private sampleManager: SampleManager) {
 
@@ -50,6 +56,13 @@ export class AudioEngine {
   async playSample(note: string) {
     if (!this.sampler) return;
     this.sampler.triggerAttackRelease(note, '8n');
+    this.recordedNotes.push({
+      note,
+      time: Time(now()).toSeconds(),
+      duration: '8n',
+      velocity: 1,
+    });
+    console.log(this.recordedNotes)
   }
 
   cleanup() {

@@ -12,7 +12,7 @@ interface ISettingsProps {
 
 const strings = ['e', 'A', 'D', 'G', 'B', 'E']
 export const NOTES = ['E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B', 'C', 'C#', 'D', 'D#'];
-export const NUMBERS = [1, 2, 3, 4, 5, 6];
+export const NUMBERS = [1, 2, 3, 4, 5];
 
 const Settings: React.FC<ISettingsProps> = ({ volume, tuning, onVolumeChange, onTuningChange }) => {
     const [localTuning, setLocalTuning] = useState<{
