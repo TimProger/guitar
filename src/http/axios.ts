@@ -1,7 +1,7 @@
 import axios, {InternalAxiosRequestConfig} from "axios";
 import {Storage} from "../utils/storage";
 
-export const API_BASE_URL = `http://77.239.125.198:8086/api/muslow-service`;
+export const API_BASE_URL = `https://geb.onrender.com`;
 
 const $api = axios.create({
   baseURL: API_BASE_URL,

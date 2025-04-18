@@ -25,16 +25,16 @@ export class SampleManager {
 
     const sampleMap: SampleMap = createSampleMap(`/${this.selectedGuitarType}`, NOTES);
 
-    await this.validateSamples(sampleMap, instrumentType);
+    await this.validateSamples(sampleMap);
 
     return sampleMap;
   }
   
   // Проверка наличия сэмплов в папке
   // Если сэмпл отсутствует, он будет сгенерирован вручную позже
-  private async validateSamples(samples: Record<string, string>, instrumentType: string) {
+  private async validateSamples(samples: Record<string, string>) {
     for (const [note, path] of Object.entries(samples)) {
-      const response = await fetch(`/samples/${instrumentType}/${path}.mp3`);
+      const response = await fetch(`${this.baseUrl}/${path}`);
       if (!response.ok) {
         console.error(`Sample missing: ${note}`);
         delete samples[note];

@@ -4,6 +4,7 @@ import { Instrument, IStrings } from "../../modules/instrument/Instrument";
 import StringComponent from "./parts/StringComponent";
 import s from './styles.module.scss';
 import MenuComponent from "./parts/MenuComponent";
+import { $api } from "../../http/axios";
 
 interface IHomeProps {
 }
@@ -24,6 +25,19 @@ const Home: React.FC<IHomeProps> = ({}) => {
     }
   }, [instrument]);
 
+  const buttonHandler = () => {
+    $api.post('/auth/register', {
+      email: "7b22atatima@mail.ru",
+      username: "crumbl",
+      password: "qwerty123",
+      role: "user"
+    }).then(res => {
+      console.log(res.data);
+    }).catch(err => {
+      console.log(err);
+    })
+  }
+
   return (
     <div className={s.main}>
       <div className={s.guitar}>
@@ -39,6 +53,7 @@ const Home: React.FC<IHomeProps> = ({}) => {
               index={index}
             />
           ))}
+          <button onClick={buttonHandler} >кликни</button>
         </div>
       </div>
       <div className={s.menu}>
