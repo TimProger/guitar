@@ -2,7 +2,7 @@ import { AudioEngine } from "../audio/AudioEngine";
 import { Instrument } from "./Instrument";
 
 type ITuningPreset = 'standard' | 'dropD' | 'openG' | 'custom';
-const tuningPresets = {
+export const tuningPresets = {
     standard: ['E2', 'A2', 'D3', 'G3', 'B3', 'E4'],
     dropD: ['D2', 'A2', 'D3', 'G3', 'B3', 'E4'],
     openG: ['D2', 'G2', 'D3', 'G3', 'B3', 'D4']

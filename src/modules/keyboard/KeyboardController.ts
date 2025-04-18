@@ -116,7 +116,7 @@ export class KeyboardController {
   
     ordered.forEach(({ note }, index) => {
       if (note) {
-        setTimeout(() => this._audioEngine.playSample(note), index * 50);
+        setTimeout(() => this._audioEngine.playSample(note), index * 25);
       }
     });
   }

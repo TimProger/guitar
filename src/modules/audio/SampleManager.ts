@@ -11,12 +11,13 @@ export const NOTES = [
 export class SampleManager {
   private samplesCache: Map<string, SampleMap> = new Map();
   private baseUrl = '/samples';
-  private selectedGuitarType = 'guitar-acoustic';
+  private selectedGuitarType = 'guitar-acoustic'; // Тип гитары
   
   constructor(selectedGuitarType: string) {
-    this.selectedGuitarType = selectedGuitarType; // Тип гитары
+    this.selectedGuitarType = selectedGuitarType;
   }
 
+  // Загрузка сэмплов под переданный тип инструмента
   async loadSamples(instrumentType: string): Promise<SampleMap> {
     if (this.samplesCache.has(instrumentType)) {
       return this.samplesCache.get(instrumentType)!;
@@ -29,6 +30,8 @@ export class SampleManager {
     return sampleMap;
   }
   
+  // Проверка наличия сэмплов в папке
+  // Если сэмпл отсутствует, он будет сгенерирован вручную позже
   private async validateSamples(samples: Record<string, string>, instrumentType: string) {
     for (const [note, path] of Object.entries(samples)) {
       const response = await fetch(`/samples/${instrumentType}/${path}.mp3`);
@@ -39,11 +42,8 @@ export class SampleManager {
     }
   }
 
+  // Получение URL для сэмпла
   getSampleUrl(note: string): string {
     return `${this.baseUrl}${note}`;
-  }
-
-  getInstrumentSamples(instrumentType: string): SampleMap | undefined {
-    return this.samplesCache.get(instrumentType);
   }
 }

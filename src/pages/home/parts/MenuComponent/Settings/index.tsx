@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import s from './styles.module.scss';
 import classNames from 'classnames';
+import { tuningPresets } from '../../../../../modules/instrument/InstrumentSettings';
 
 interface ISettingsProps {
     volume: number;
@@ -23,6 +24,8 @@ const Settings: React.FC<ISettingsProps> = ({ volume, tuning, onVolumeChange, on
         number: note.includes('#') ? +note.split('#')[1] : +note.split('')[1],
     })).reverse());
     const [release, setRelease] = useState<number>(1);
+    const [presets, _] = useState<typeof tuningPresets>(tuningPresets);
+    const [preset, setPreset] = useState<keyof typeof tuningPresets>('standard');
 
     const handleTuningChange = (type: 'note' | 'number', index: number, value: string) => {
         switch (type) {
@@ -45,10 +48,28 @@ const Settings: React.FC<ISettingsProps> = ({ volume, tuning, onVolumeChange, on
         }
     };
 
+    useEffect(() => {
+        onTuningChange(JSON.parse(JSON.stringify(presets[preset])))
+        setLocalTuning(presets[preset].map((note, index) => ({
+            index,
+            note: note.includes('#') ? note.split('#')[0] : note.split('')[0],
+            number: note.includes('#') ? +note.split('#')[1] : +note.split('')[1],
+        })).reverse());
+    }, [preset]);
+
     return (
         <div className={s.settings}>
             <div className={classNames(s.setting, s.tuning)}>
                 <label>Tuning</label>
+                <select value={preset} onChange={(e) => {
+                    setPreset(e.target.value as keyof typeof tuningPresets);
+                }}>
+                    {Object.keys(tuningPresets).map((preset) => (
+                    <option key={preset} value={preset}>
+                        {preset}
+                    </option>
+                    ))}
+                </select>
                 <div className={s.tuningInputs}>
                     {localTuning
                         .map((note, index) => (

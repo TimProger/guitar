@@ -28,7 +28,7 @@ const Home: React.FC<IHomeProps> = ({}) => {
     <div className={s.main}>
       <div className={s.guitar}>
         <div className={s.container}></div>
-        <img src="/images/guitar.png" alt="guitar_img" />
+        <img src="/images/guitar.png" alt="guitar_img" draggable="false" />
         <div className={s.strings}>
           {stringsData && Object.keys(stringsData).map((stringName, index) => (
             <StringComponent
