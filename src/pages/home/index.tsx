@@ -4,8 +4,8 @@ import { Instrument, IStrings } from "../../modules/instrument/Instrument";
 import StringComponent from "./parts/StringComponent";
 import s from './styles.module.scss';
 import MenuComponent from "./parts/MenuComponent";
-import { $api } from "../../http/axios";
-import { Storage } from "../../utils/storage";
+// import { $api } from "../../http/axios";
+// import { Storage } from "../../utils/storage";
 
 interface IHomeProps {
 }
@@ -27,19 +27,19 @@ const Home: React.FC<IHomeProps> = ({}) => {
     }
   }, [instrument]);
 
-  const buttonHandler = () => {
-    $api.post('/auth/register', {
-      email: "7b2332atdatima@mail.ru",
-      username: "crumbl",
-      password: "qwerty123",
-      role: "user"
-    }).then(res => {
-      Storage.set('accessToken', res.data.access_token);
-      console.log(res.data);
-    }).catch(err => {
-      console.log(err);
-    })
-  }
+  // const buttonHandler = () => {
+  //   $api.post('/auth/register', {
+  //     email: "7b2332atdatima@mail.ru",
+  //     username: "crumbl",
+  //     password: "qwerty123",
+  //     role: "user"
+  //   }).then(res => {
+  //     Storage.set('accessToken', res.data.access_token);
+  //     console.log(res.data);
+  //   }).catch(err => {
+  //     console.log(err);
+  //   })
+  // }
 
   return (
     <div className={s.main}>
@@ -56,7 +56,7 @@ const Home: React.FC<IHomeProps> = ({}) => {
               index={index}
             />
           ))}
-          <button onClick={buttonHandler} >кликнsss22223</button>
+          {/* <button onClick={buttonHandler} >кликнsss22223</button> */}
         </div>
       </div>
       <div className={s.menu}>
