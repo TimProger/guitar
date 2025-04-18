@@ -91,6 +91,7 @@ export class Instrument {
   }
 
   constructor() {
+    console.log('Instrument initialized')
     this.currentTuning = this.getDefaultTuning()
     this.sampleManager = new SampleManager(this.selectedGuitarType);
     this.audioEngine = new AudioEngine(this.sampleManager);

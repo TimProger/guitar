@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IStringNames } from "@/types/guitar.types";
 import { Instrument, IStrings } from "../../modules/instrument/Instrument";
 import StringComponent from "./parts/StringComponent";
@@ -9,9 +9,10 @@ import { $api } from "../../http/axios";
 interface IHomeProps {
 }
 
+const instrument = new Instrument(); // Один на всё приложение
+
 const Home: React.FC<IHomeProps> = ({}) => {
 
-  const instrument = useMemo(() => new Instrument(), []);
   const [stringsData, setStringsData] = useState<IStrings | null>(null)
 
   const pressFret = (stringName: IStringNames, _note: string, noteIndex: number) => {

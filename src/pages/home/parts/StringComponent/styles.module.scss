@@ -43,6 +43,7 @@ $fret-ratio: 1 / (2 pow (1/12)); // ≈ 0.94387431268
       cursor: pointer;
       font-size: 10px;
       transition: background-color 0.3s, opacity .1s;
+      user-select: none;
 
       &-1{
         margin-left: 2px;

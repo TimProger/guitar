@@ -1,5 +1,6 @@
 import { Player, Sampler } from 'tone';
 import { SampleManager } from './SampleManager';
+import { API_BASE_URL } from '../../http/axios';
 
 interface IAudioSettings {
   guitar: IGuitarSettings;
@@ -37,7 +38,7 @@ export class AudioEngine {
     const samples = await this.sampleManager.loadSamples(instrumentType);
     this.sampler = new Sampler({
       urls: samples,
-      baseUrl: '/samples',
+      baseUrl: `${API_BASE_URL}/static`,
       release: this.settings.guitar.release,
       volume: this.settings.guitar.volume-8,
       onload: () => {
