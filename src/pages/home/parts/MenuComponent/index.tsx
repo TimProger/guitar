@@ -2,13 +2,13 @@
 import s from './styles.module.scss';
 import classNames from 'classnames';
 import { useMenu } from './useMenu';
-import { Instrument } from '@/modules/instrument/Instrument';
+import { InstrumentController } from '@/modules/instrument/InstrumentController';
 import Chord from './Chord/Chord';
 import Settings from './Settings';
 
 interface IMenuProps {
     setStringsData: any
-    instrument: Instrument;
+    instrument: InstrumentController;
 }
 
 const MenuComponent: React.FC<IMenuProps> = ({ setStringsData, instrument }) => {

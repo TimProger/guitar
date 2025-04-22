@@ -1,3 +1,4 @@
+// import { NavLink } from "react-router-dom";
 import s from "./styles.module.scss";
 
 interface LayoutProps {
@@ -11,6 +12,7 @@ const Layout = ({ children }: LayoutProps) => {
       <header>
         <div>
           <h2>Guitar Emulator</h2>
+          {/* <NavLink to={'/profile'}><h3>Profile</h3></NavLink> */}
         </div>
       </header>
 

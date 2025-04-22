@@ -1,128 +1,100 @@
-import { IActiveChord, IChord } from '@/types/guitar.types';
+import { IChord } from '@/types/guitar.types';
 import { KeyboardControllerStatus } from './types';
 import { DEFAULT_KEYBINDS } from './KeybindPresets';
 import { AudioEngine } from '../audio/AudioEngine';
+import { ChordManager } from './ChordManager';
 
 export class KeyboardController {
-  private _audioEngine: AudioEngine;
-  private _status: KeyboardControllerStatus = 'idle';
-  private _activeChords: Map<number, IChord> = new Map();
-  private _currentChord: IActiveChord | null = null;
-  private _currentRegisterChord: IChord | null = null;
-  protected forceUpdate: (() => void) | null = null;
+  private status: KeyboardControllerStatus = 'idle';
+  private currentRegisterChord: IChord | null = null;
+  protected forceUpdate: (() => void) | null = null; // Колбек для обновления UI
 
-  constructor(audioEngine: AudioEngine) {
-    this._audioEngine = audioEngine;
+  constructor(
+    private chordManager: ChordManager,
+    private audioEngine: AudioEngine
+  ) {
     this.setupEventListeners();
   }
-
-  public setStatus(status: KeyboardControllerStatus) {
-    this._status = status;
-    if (status === 'recording') {
-      // Логика записи
-    }
-  }
-
-  // Публичный метод для установки колбэка
-  public setForceUpdate(callback: () => void) {
-    this.forceUpdate = callback;
-  }
-
-  public getSelectedChordId(): number | null {
-    return this._currentChord ? this._currentChord.id : null;
-  }
-
-  public getChord(id: number): IChord | undefined {
-    return this._activeChords.get(id);
-  }
-
-  public getChords(): Record<number, IChord> {
-    return Object.fromEntries(this._activeChords.entries());
+  
+  public getSelectedChordId() {
+    return this.chordManager.getCurrentChord()?.id ?? null;
   }
   
-  public getStatus(): KeyboardControllerStatus {
-    return this._status;
+  public getRegisteredChords() {
+    return this.chordManager.getChords();
   }
 
-  setCurrentRegisterChord(chord: IChord) {
-    this._currentRegisterChord = chord
+  public setForceUpdate(callback: () => void) {
+    this.forceUpdate = callback; 
   }
 
-  registerChord(key: number, chord: IChord) {
-    this._activeChords.set(key, chord);
+  public startChordRegistration(chord: IChord) {
+    this.status = 'registrating';
+    this.currentRegisterChord = chord;
   }
 
-  // Обработка событий
   private setupEventListeners() {
     document.addEventListener('keydown', this.handleKeyDown);
     document.addEventListener('keyup', this.handleKeyUp);
   }
 
   private handleKeyDown = (e: KeyboardEvent) => {
-    if (this._status === 'disabled') return;
-
-    // Режим записи аккорда
-    if (this._status === 'registrating' && this._currentRegisterChord && e.key >= DEFAULT_KEYBINDS.CHORD_SELECTION.min && e.key <= DEFAULT_KEYBINDS.CHORD_SELECTION.max) {
-      this.registerChord(+e.key - 1, this._currentRegisterChord);
-      this._currentRegisterChord = null;
-      this.forceUpdate?.(); // Уведомляем Instrument.ts о необходимости обновления
-      this.setStatus('playing')
+    if (this.status === 'registrating' && 
+        e.key >= DEFAULT_KEYBINDS.CHORD_SELECTION.min && 
+        e.key <= DEFAULT_KEYBINDS.CHORD_SELECTION.max) {
+      this.registerChord(e);
       return;
     }
 
-    // Нормальный режим работы
-    if (e.key >= DEFAULT_KEYBINDS.CHORD_SELECTION.min && e.key <= DEFAULT_KEYBINDS.CHORD_SELECTION.max) {
-      this.selectChord(+e.key - 1);
-      this.forceUpdate?.(); // Уведомляем Instrument.ts о необходимости обновления
+    if (e.key >= DEFAULT_KEYBINDS.CHORD_SELECTION.min && 
+        e.key <= DEFAULT_KEYBINDS.CHORD_SELECTION.max) {
+      this.selectChord(e);
+      this.forceUpdate?.();
     }
 
-    if (this._currentChord && [DEFAULT_KEYBINDS.CHORD_PLAY.asc, DEFAULT_KEYBINDS.CHORD_PLAY.desc].includes(e.key)) {
+    if ([DEFAULT_KEYBINDS.CHORD_PLAY.asc, DEFAULT_KEYBINDS.CHORD_PLAY.desc].includes(e.key)) {
       this.playCurrentChord(e.key === DEFAULT_KEYBINDS.CHORD_PLAY.asc ? 'asc' : 'desc');
     }
   };
 
+  private registerChord(e: KeyboardEvent) {
+    if (!this.currentRegisterChord) return;
+    
+    this.chordManager.registerChord(+e.key - 1, this.currentRegisterChord);
+    this.status = 'playing';
+    this.currentRegisterChord = null;
+    this.forceUpdate?.();
+  }
+
   private handleKeyUp = (e: KeyboardEvent) => {
-    if (this._status === 'playing' && e.key >= DEFAULT_KEYBINDS.CHORD_SELECTION.min && e.key <= DEFAULT_KEYBINDS.CHORD_SELECTION.max) {
-      this._currentChord = null;
-      this.forceUpdate?.(); // Уведомляем Instrument.ts о необходимости обновления
+    if (this.status === 'playing' && e.key >= DEFAULT_KEYBINDS.CHORD_SELECTION.min && e.key <= DEFAULT_KEYBINDS.CHORD_SELECTION.max) {
+      this.chordManager.selectChord(-1);
+      console.log(this.chordManager.getCurrentChord())
+      this.forceUpdate?.();
     }
   };
 
-  // Логика аккордов
-  private selectChord(key: number) {
-    const chord = this._activeChords.get(key);
-    if (!chord) return;
-
-    this._currentChord = {
-      id: key,
-      index: key,
-      chord,
-      timestamp: Date.now()
-    };
-
-    if (this._status === 'idle') {
-      this._status = 'playing';
-    }
+  private selectChord(e: KeyboardEvent) {
+    this.chordManager.selectChord(+e.key - 1);
+    this.forceUpdate?.();
   }
 
   private playCurrentChord(direction: 'asc' | 'desc') {
-    if (!this._currentChord?.chord.strings) return; // Проверяем и strings на null
-    const { strings } = this._currentChord.chord;
-    const stringValues = Object.values(strings); // Теперь strings точно объект
+    const currentChord = this.chordManager.getCurrentChord();
+    if (!currentChord) return;
+
+    const notes = Object.values(currentChord.chord.strings)
+      .filter(note => note.note)
+      .map(note => note.note);
+
+    const ordered = direction === 'asc' ? [...notes].reverse() : notes;
     
-    const ordered = direction === 'asc' 
-      ? [...stringValues].reverse() 
-      : stringValues;
-  
-    ordered.forEach(({ note }, index) => {
-      if (note) {
-        setTimeout(() => this._audioEngine.playSample(note), index * 25);
-      }
+    ordered.forEach((note, index) => {
+      setTimeout(() => this.audioEngine.playSample(note), index * 25);
     });
   }
 
-  cleanup() {
-    console.log('removed')
+  public cleanup() {
     document.removeEventListener('keydown', this.handleKeyDown);
     document.removeEventListener('keyup', this.handleKeyUp);
   }

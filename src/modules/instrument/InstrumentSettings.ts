@@ -1,5 +1,5 @@
 import { AudioEngine } from "../audio/AudioEngine";
-import { Instrument } from "./Instrument";
+import { InstrumentController } from "./InstrumentController";
 
 type ITuningPreset = 'standard' | 'dropD' | 'openG' | 'custom';
 export const tuningPresets = {
@@ -30,7 +30,7 @@ class InstrumentSettings implements IInstrumentSettings {
     private listeners: Set<() => void> = new Set();
     private settings: InstrumentSettingsParams;
 
-    constructor(private audioEngine: AudioEngine, private instrument: Instrument) {
+    constructor(private audioEngine: AudioEngine, private instrument: InstrumentController) {
         this.settings = this.getDefaultSettings();
     }
 
@@ -71,7 +71,7 @@ class InstrumentSettings implements IInstrumentSettings {
             notes: [...newTuning]
         };
     
-        this.instrument.setTuning(newTuning);
+        this.instrument.startChordRegistration();
         this.notifyListeners();
     }
 

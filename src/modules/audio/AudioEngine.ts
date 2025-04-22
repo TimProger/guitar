@@ -12,6 +12,7 @@ interface IGuitarSettings {
 }
 
 export class AudioEngine {
+  private status: 'playing' | 'stopped' = 'stopped';
   private sampler: Sampler | null = null;
   private activePlayers: Set<Player> = new Set();
   private settings: IAudioSettings = {
@@ -33,6 +34,9 @@ export class AudioEngine {
 
   public setVolume(value: number) {
     this.settings.guitar.volume = value;
+    if(this.sampler) {
+      this.sampler.volume.value = value - 8; // Установка громкости
+    }
   }
 
   public setRelease(value: number) {
@@ -40,6 +44,7 @@ export class AudioEngine {
   }
 
   async init(instrumentType: string = 'guitar-acoustic') {
+    this.status = 'stopped';
     this.cleanup(); // Очистка перед инициализацией
     const samples = await this.sampleManager.loadSamples(instrumentType);
     this.sampler = new Sampler({
@@ -48,13 +53,14 @@ export class AudioEngine {
       release: this.settings.guitar.release,
       volume: this.settings.guitar.volume-8,
       onload: () => {
+        this.status = 'playing';
         console.log(`Samples for ${instrumentType} loaded`)
       },
     }).toDestination();
   }
 
   async playSample(note: string) {
-    if (!this.sampler) return;
+    if (!this.sampler || this.status === 'stopped') return;
     this.sampler.triggerAttackRelease(note, '8n');
     this.recordedNotes.push({
       note,

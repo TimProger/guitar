@@ -1,10 +1,10 @@
-import { Instrument } from "@/modules/instrument/Instrument";
+import { InstrumentController } from "@/modules/instrument/InstrumentController";
 import { IChord } from "@/types/guitar.types";
 import { useEffect, useState } from "react";
 
 interface IUseMenu {
     setStringsData: any;
-    instrument: Instrument;
+    instrument: InstrumentController;
 }
 
 type PageType = 'chords' | 'settings';
@@ -29,21 +29,22 @@ export const useMenu = ({setStringsData, instrument}: IUseMenu): IUseMenuReturn 
     const [activeChords, setActiveChords] = useState<Record<number, IChord>>([])
     const [timeoutId, setTimeoutId] = useState<number>(-1);
     const [volume, setVolume] = useState<number>(1);
-    const [tuning, setTuning] = useState<string[]>(instrument.getCurrentTuning());
+    const [tuning, setTuning] = useState<string[]>(instrument.getStringManager().getCurrentTuning());
     const [_, forceUpdate] = useState({});
     const triggerUpdate = () => forceUpdate({});
 
     const startRegistration = () => {
-        instrument.startRegistratingChord()
+        instrument.startChordRegistration()
         setSelectedChordId(-1);
     }
 
     useEffect(() => {
         instrument.setForceUpdate(() => {
+            console.log(instrument.getKeyboardController().getSelectedChordId()) // Получаем ID зажатого аккорда
             setSelectedChordId(instrument.getKeyboardController().getSelectedChordId()); // Создаём новый объект
-            setActiveChords({ ...instrument.getRegisteredChords() }); // Создаём новый объект
-            setTuning([...instrument.getCurrentTuning()]); // Обновляем строй
-            setStringsData(instrument.getStringsData()); // Обновляем струны
+            setActiveChords({ ...instrument.getKeyboardController().getRegisteredChords() }); // Создаём новый объект
+            setTuning([...instrument.getStringManager().getCurrentTuning()]); // Обновляем строй
+            setStringsData(instrument.getStringManager().getStringsData()); // Обновляем струны
             triggerUpdate(); // Запускаем обновление компонента
         });
     }, [instrument]);
@@ -59,7 +60,7 @@ export const useMenu = ({setStringsData, instrument}: IUseMenu): IUseMenuReturn 
 
     const updateTuning = (newTuning: string[]) => {
         setTuning(newTuning.slice().reverse());
-        instrument.setTuning(newTuning);
+        instrument.getStringManager().setTuning(newTuning);
     };
 
     return {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { IStringNames } from "@/types/guitar.types";
-import { Instrument, IStrings } from "../../modules/instrument/Instrument";
+import { InstrumentController, IStrings } from "../../modules/instrument/InstrumentController";
 import StringComponent from "./parts/StringComponent";
 import s from './styles.module.scss';
 import MenuComponent from "./parts/MenuComponent";
@@ -10,7 +10,7 @@ import MenuComponent from "./parts/MenuComponent";
 interface IHomeProps {
 }
 
-const instrument = new Instrument(); // Один на всё приложение
+const instrument = new InstrumentController(); // Один на всё приложение
 
 const Home: React.FC<IHomeProps> = ({}) => {
 
@@ -18,12 +18,11 @@ const Home: React.FC<IHomeProps> = ({}) => {
 
   const pressFret = (stringName: IStringNames, _note: string, noteIndex: number) => {
     instrument.pressFret(stringName, noteIndex);
-    // forceUpdate({});
   };
 
   useEffect(() => {
     if(instrument){
-      setStringsData(instrument.getStringsData())
+      setStringsData(instrument.getStringManager().getStringsData())
     }
   }, [instrument]);
 
