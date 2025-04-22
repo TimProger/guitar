@@ -1,3 +1,9 @@
 node_modules
 dist
 build
+.next
+out
+*.d.ts
+*.generated.ts
+*.config.js
+public

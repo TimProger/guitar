@@ -1,3 +1,4 @@
+import React from 'react';
 import classNames from 'classnames';
 import s from './styles.module.scss';
 import { IFret, IStrings } from '@/types/guitar.types';
@@ -21,6 +22,11 @@ const StringComponent: React.FC<StringProps> = ({ name, frets, pressFret, index 
                         className={classNames(s.fret, s[`fret-${noteIndex}`], {
                             [s.fret_pressed]: frets[fretId].isPressed,
                         })}
+                        onKeyDown={(e) =>
+                            e.key === 'Enter' && pressFret(name, frets[fretId].note, noteIndex)
+                        }
+                        role="button"
+                        tabIndex={0}
                         onClick={() => pressFret(name, frets[fretId].note, noteIndex)}
                     >
                         {frets[fretId].note}

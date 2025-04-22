@@ -1,3 +1,4 @@
+import React from 'react';
 // import { IChord } from '@/types/guitar.types';
 import s from './styles.module.scss';
 import classNames from 'classnames';
@@ -31,6 +32,9 @@ const MenuComponent: React.FC<IMenuProps> = ({ setStringsData, instrument }) => 
                 return (
                     <div className={s.chords}>
                         <div
+                            tabIndex={0}
+                            role="button"
+                            onKeyDown={(e) => e.key === 'Enter' && startRegistration()}
                             onClick={() => startRegistration()}
                             className={classNames(s.chord, s.chord_add, {
                                 [s.chord_active]: selectedChordId === -1,
@@ -66,8 +70,22 @@ const MenuComponent: React.FC<IMenuProps> = ({ setStringsData, instrument }) => 
         <div className={s.menu}>
             <div className={s.container}>
                 <div className={s.tabs}>
-                    <div onClick={() => setPage('settings')}>Настройки</div>
-                    <div onClick={() => setPage('chords')}>Аккорды</div>
+                    <div
+                        tabIndex={0}
+                        onKeyDown={(e) => e.key === 'Enter' && setPage('settings')}
+                        role="button"
+                        onClick={() => setPage('settings')}
+                    >
+                        Настройки
+                    </div>
+                    <div
+                        tabIndex={0}
+                        onKeyDown={(e) => e.key === 'Enter' && setPage('chords')}
+                        role="button"
+                        onClick={() => setPage('chords')}
+                    >
+                        Аккорды
+                    </div>
                 </div>
                 <div className={s.page}>{displayPages()}</div>
             </div>

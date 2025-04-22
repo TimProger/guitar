@@ -1,9 +1,9 @@
-import { InstrumentController } from '@/modules/instrument/InstrumentController';
+import { InstrumentController, IStrings } from '@/modules/instrument/InstrumentController';
 import { IChord } from '@/types/guitar.types';
 import { useEffect, useState } from 'react';
 
 interface IUseMenu {
-    setStringsData: any;
+    setStringsData: (data: IStrings) => void;
     instrument: InstrumentController;
 }
 
@@ -41,14 +41,13 @@ export const useMenu = ({ setStringsData, instrument }: IUseMenu): IUseMenuRetur
 
     useEffect(() => {
         instrument.setForceUpdate(() => {
-            console.log(instrument.getKeyboardController().getSelectedChordId()); // Получаем ID зажатого аккорда
             setSelectedChordId(instrument.getKeyboardController().getSelectedChordId()); // Создаём новый объект
             setActiveChords({ ...instrument.getKeyboardController().getRegisteredChords() }); // Создаём новый объект
             setTuning([...instrument.getStringManager().getCurrentTuning()]); // Обновляем строй
             setStringsData(instrument.getStringManager().getStringsData()); // Обновляем струны
             triggerUpdate(); // Запускаем обновление компонента
         });
-    }, [instrument]);
+    }, [setStringsData]);
 
     const updateVolume = (value: number) => {
         setVolume(value);

@@ -22,7 +22,7 @@ const Home: React.FC<IHomeProps> = ({}) => {
         if (instrument) {
             setStringsData(instrument.getStringManager().getStringsData());
         }
-    }, [instrument]);
+    }, []);
 
     // const buttonHandler = () => {
     //   $api.post('/auth/register', {

@@ -1,7 +1,7 @@
+import React from 'react';
 import HomePage from 'pages/home';
 import './_vars.scss';
 import './_globals.scss';
-import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Layout from './components/Layout';
 

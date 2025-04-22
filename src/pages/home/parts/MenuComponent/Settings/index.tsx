@@ -74,8 +74,9 @@ const Settings: React.FC<ISettingsProps> = ({ volume, tuning, onVolumeChange, on
     return (
         <div className={s.settings}>
             <div className={classNames(s.setting, s.tuning)}>
-                <label>Tuning</label>
+                <label htmlFor="tuning-input">Tuning</label>
                 <select
+                    id="tuning-input"
                     value={preset}
                     onChange={(e) => {
                         setPreset(e.target.value as keyof typeof tuningPresets);
@@ -90,8 +91,9 @@ const Settings: React.FC<ISettingsProps> = ({ volume, tuning, onVolumeChange, on
                 <div className={s.tuningInputs}>
                     {localTuning.map((note, index) => (
                         <div key={index} className={s.tuningInput}>
-                            <label>{strings[index]}</label>
+                            <label htmlFor={`tuning-input1-${index}`}>{strings[index]}</label>
                             <select
+                                id={`tuning-input1-${index}`}
                                 value={note.note}
                                 onChange={(e) => handleTuningChange('note', index, e.target.value)}
                                 className={`note-select`}
@@ -103,6 +105,7 @@ const Settings: React.FC<ISettingsProps> = ({ volume, tuning, onVolumeChange, on
                                 ))}
                             </select>
                             <select
+                                id={`tuning-input1-${index}`}
                                 value={note.number}
                                 onChange={(e) =>
                                     handleTuningChange('number', index, e.target.value)
@@ -120,9 +123,10 @@ const Settings: React.FC<ISettingsProps> = ({ volume, tuning, onVolumeChange, on
                 </div>
             </div>
             <div className={classNames(s.setting, s.volume)}>
-                <label>Volume</label>
+                <label htmlFor={`volume-input`}>Volume</label>
                 <div className={s.volumeControl}>
                     <input
+                        id={`volume-input`}
                         type="range"
                         min="1"
                         max="10"
@@ -134,9 +138,10 @@ const Settings: React.FC<ISettingsProps> = ({ volume, tuning, onVolumeChange, on
                 </div>
             </div>
             <div className={classNames(s.setting, s.volume)}>
-                <label>Release</label>
+                <label htmlFor={`release-input`}>Release</label>
                 <div className={s.volumeControl}>
                     <input
+                        id={`release-input`}
                         type="range"
                         min="1"
                         max="10"
