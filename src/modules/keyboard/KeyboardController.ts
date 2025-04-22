@@ -5,97 +5,105 @@ import { AudioEngine } from '../audio/AudioEngine';
 import { ChordManager } from './ChordManager';
 
 export class KeyboardController {
-  private status: KeyboardControllerStatus = 'idle';
-  private currentRegisterChord: IChord | null = null;
-  protected forceUpdate: (() => void) | null = null; // Колбек для обновления UI
+    private status: KeyboardControllerStatus = 'idle';
+    private currentRegisterChord: IChord | null = null;
+    protected forceUpdate: (() => void) | null = null; // Колбек для обновления UI
 
-  constructor(
-    private chordManager: ChordManager,
-    private audioEngine: AudioEngine
-  ) {
-    this.setupEventListeners();
-  }
-  
-  public getSelectedChordId() {
-    return this.chordManager.getCurrentChord()?.id ?? null;
-  }
-  
-  public getRegisteredChords() {
-    return this.chordManager.getChords();
-  }
-
-  public setForceUpdate(callback: () => void) {
-    this.forceUpdate = callback; 
-  }
-
-  public startChordRegistration(chord: IChord) {
-    this.status = 'registrating';
-    this.currentRegisterChord = chord;
-  }
-
-  private setupEventListeners() {
-    document.addEventListener('keydown', this.handleKeyDown);
-    document.addEventListener('keyup', this.handleKeyUp);
-  }
-
-  private handleKeyDown = (e: KeyboardEvent) => {
-    if (this.status === 'registrating' && 
-        e.key >= DEFAULT_KEYBINDS.CHORD_SELECTION.min && 
-        e.key <= DEFAULT_KEYBINDS.CHORD_SELECTION.max) {
-      this.registerChord(e);
-      return;
+    constructor(
+        private chordManager: ChordManager,
+        private audioEngine: AudioEngine
+    ) {
+        this.setupEventListeners();
     }
 
-    if (e.key >= DEFAULT_KEYBINDS.CHORD_SELECTION.min && 
-        e.key <= DEFAULT_KEYBINDS.CHORD_SELECTION.max) {
-      this.selectChord(e);
-      this.forceUpdate?.();
+    public getSelectedChordId() {
+        return this.chordManager.getCurrentChord()?.id ?? null;
     }
 
-    if ([DEFAULT_KEYBINDS.CHORD_PLAY.asc, DEFAULT_KEYBINDS.CHORD_PLAY.desc].includes(e.key)) {
-      this.playCurrentChord(e.key === DEFAULT_KEYBINDS.CHORD_PLAY.asc ? 'asc' : 'desc');
+    public getRegisteredChords() {
+        return this.chordManager.getChords();
     }
-  };
 
-  private registerChord(e: KeyboardEvent) {
-    if (!this.currentRegisterChord) return;
-    
-    this.chordManager.registerChord(+e.key - 1, this.currentRegisterChord);
-    this.status = 'playing';
-    this.currentRegisterChord = null;
-    this.forceUpdate?.();
-  }
-
-  private handleKeyUp = (e: KeyboardEvent) => {
-    if (this.status === 'playing' && e.key >= DEFAULT_KEYBINDS.CHORD_SELECTION.min && e.key <= DEFAULT_KEYBINDS.CHORD_SELECTION.max) {
-      this.chordManager.selectChord(-1);
-      console.log(this.chordManager.getCurrentChord())
-      this.forceUpdate?.();
+    public setForceUpdate(callback: () => void) {
+        this.forceUpdate = callback;
     }
-  };
 
-  private selectChord(e: KeyboardEvent) {
-    this.chordManager.selectChord(+e.key - 1);
-    this.forceUpdate?.();
-  }
+    public startChordRegistration(chord: IChord) {
+        this.status = 'registrating';
+        this.currentRegisterChord = chord;
+    }
 
-  private playCurrentChord(direction: 'asc' | 'desc') {
-    const currentChord = this.chordManager.getCurrentChord();
-    if (!currentChord) return;
+    private setupEventListeners() {
+        document.addEventListener('keydown', this.handleKeyDown);
+        document.addEventListener('keyup', this.handleKeyUp);
+    }
 
-    const notes = Object.values(currentChord.chord.strings)
-      .filter(note => note.note)
-      .map(note => note.note);
+    private handleKeyDown = (e: KeyboardEvent) => {
+        if (
+            this.status === 'registrating' &&
+            e.key >= DEFAULT_KEYBINDS.CHORD_SELECTION.min &&
+            e.key <= DEFAULT_KEYBINDS.CHORD_SELECTION.max
+        ) {
+            this.registerChord(e);
+            return;
+        }
 
-    const ordered = direction === 'asc' ? [...notes].reverse() : notes;
-    
-    ordered.forEach((note, index) => {
-      setTimeout(() => this.audioEngine.playSample(note), index * 25);
-    });
-  }
+        if (
+            e.key >= DEFAULT_KEYBINDS.CHORD_SELECTION.min &&
+            e.key <= DEFAULT_KEYBINDS.CHORD_SELECTION.max
+        ) {
+            this.selectChord(e);
+            this.forceUpdate?.();
+        }
 
-  public cleanup() {
-    document.removeEventListener('keydown', this.handleKeyDown);
-    document.removeEventListener('keyup', this.handleKeyUp);
-  }
+        if ([DEFAULT_KEYBINDS.CHORD_PLAY.asc, DEFAULT_KEYBINDS.CHORD_PLAY.desc].includes(e.key)) {
+            this.playCurrentChord(e.key === DEFAULT_KEYBINDS.CHORD_PLAY.asc ? 'asc' : 'desc');
+        }
+    };
+
+    private registerChord(e: KeyboardEvent) {
+        if (!this.currentRegisterChord) return;
+
+        this.chordManager.registerChord(+e.key - 1, this.currentRegisterChord);
+        this.status = 'playing';
+        this.currentRegisterChord = null;
+        this.forceUpdate?.();
+    }
+
+    private handleKeyUp = (e: KeyboardEvent) => {
+        if (
+            this.status === 'playing' &&
+            e.key >= DEFAULT_KEYBINDS.CHORD_SELECTION.min &&
+            e.key <= DEFAULT_KEYBINDS.CHORD_SELECTION.max
+        ) {
+            this.chordManager.selectChord(-1);
+            console.log(this.chordManager.getCurrentChord());
+            this.forceUpdate?.();
+        }
+    };
+
+    private selectChord(e: KeyboardEvent) {
+        this.chordManager.selectChord(+e.key - 1);
+        this.forceUpdate?.();
+    }
+
+    private playCurrentChord(direction: 'asc' | 'desc') {
+        const currentChord = this.chordManager.getCurrentChord();
+        if (!currentChord) return;
+
+        const notes = Object.values(currentChord.chord.strings)
+            .filter((note) => note.note)
+            .map((note) => note.note);
+
+        const ordered = direction === 'asc' ? [...notes].reverse() : notes;
+
+        ordered.forEach((note, index) => {
+            setTimeout(() => this.audioEngine.playSample(note), index * 25);
+        });
+    }
+
+    public cleanup() {
+        document.removeEventListener('keydown', this.handleKeyDown);
+        document.removeEventListener('keyup', this.handleKeyUp);
+    }
 }

@@ -1,12 +1,12 @@
-import { AudioEngine } from "../audio/AudioEngine";
-import { InstrumentController } from "./InstrumentController";
+import { AudioEngine } from '../audio/AudioEngine';
+import { InstrumentController } from './InstrumentController';
 
 type ITuningPreset = 'standard' | 'dropD' | 'openG' | 'custom';
 export const tuningPresets = {
     standard: ['E2', 'A2', 'D3', 'G3', 'B3', 'E4'],
     dropD: ['D2', 'A2', 'D3', 'G3', 'B3', 'E4'],
-    openG: ['D2', 'G2', 'D3', 'G3', 'B3', 'D4']
-}
+    openG: ['D2', 'G2', 'D3', 'G3', 'B3', 'D4'],
+};
 
 interface IInstrumentSettings {
     getCurrentSettings(): InstrumentSettingsParams;
@@ -30,47 +30,50 @@ class InstrumentSettings implements IInstrumentSettings {
     private listeners: Set<() => void> = new Set();
     private settings: InstrumentSettingsParams;
 
-    constructor(private audioEngine: AudioEngine, private instrument: InstrumentController) {
+    constructor(
+        private audioEngine: AudioEngine,
+        private instrument: InstrumentController
+    ) {
         this.settings = this.getDefaultSettings();
     }
 
     private notifyListeners() {
-      this.listeners.forEach(listener => listener());
+        this.listeners.forEach((listener) => listener());
     }
 
     subscribe(listener: () => void) {
-      this.listeners.add(listener);
-      return () => this.listeners.delete(listener);
+        this.listeners.add(listener);
+        return () => this.listeners.delete(listener);
     }
 
     public setVolume(value: number) {
-      this.settings.volume = value;
-      this.audioEngine.setVolume(value);
-      this.notifyListeners();
+        this.settings.volume = value;
+        this.audioEngine.setVolume(value);
+        this.notifyListeners();
     }
 
     public setTuning(preset: ITuningPreset, customTuning?: string[]) {
         const tunings = {
             standard: ['E2', 'A2', 'D3', 'G3', 'B3', 'E4'],
             dropD: ['D2', 'A2', 'D3', 'G3', 'B3', 'E4'],
-            openG: ['D2', 'G2', 'D3', 'G3', 'B3', 'D4']
+            openG: ['D2', 'G2', 'D3', 'G3', 'B3', 'D4'],
         };
-    
+
         let newTuning: string[] = [...this.settings.tuning.notes];
 
-        if(preset === 'standard' || preset === 'dropD' || preset === 'openG'){
+        if (preset === 'standard' || preset === 'dropD' || preset === 'openG') {
             newTuning = tunings[preset];
-        }else{
+        } else {
             if (customTuning) {
                 newTuning = customTuning;
             }
         }
-        
+
         this.settings.tuning = {
             preset,
-            notes: [...newTuning]
+            notes: [...newTuning],
         };
-    
+
         this.instrument.startChordRegistration();
         this.notifyListeners();
     }

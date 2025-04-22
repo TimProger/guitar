@@ -2,71 +2,82 @@
 $fret-ratio: 1 / (2 pow (1/12)); // ≈ 0.94387431268
 
 .string {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  color: #dfdcdc;
-  
-  @for $x from 2 through 6 {
-    $top: 0;
-    $top: $top + 15px;
-  
-    &-#{$x} {
-      margin-top: $top;
-    }
-  }
-  
-  .frets {
     width: 100%;
     display: flex;
-    position: relative;
-  
-    @for $i from 1 through 24 {
-      .fret-#{$i} {
-        left: calc(60px * (1 - math.pow(0.94487431268, $i)) / (1 - 0.94487431268));
-      }
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    color: #dfdcdc;
+
+    @for $x from 2 through 6 {
+        $top: 0;
+        $top: $top + 15px;
+
+        &-#{$x} {
+            margin-top: $top;
+        }
     }
-  
-    .fret {
-      opacity: 0;
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #1e1e1e;
-      border: 1px solid #333;
-      cursor: pointer;
-      font-size: 10px;
-      transition: background-color 0.3s, opacity .1s;
-      user-select: none;
 
-      &-1{
-        margin-left: 2px;
-      }
+    .frets {
+        width: 100%;
+        display: flex;
+        position: relative;
 
-      &-2, &-3, &-4, &-5, &-6, &-7, &-8, &-9, &-10{
-        margin-left: 5px;
-      }
+        @for $i from 1 through 24 {
+            .fret-#{$i} {
+                left: calc(60px * (1 - math.pow(0.94487431268, $i)) / (1 - 0.94487431268));
+            }
+        }
 
-      &-11, &-12{
-        margin-left: 2px;
-      }
-    
-      &_pressed {
-        opacity: 1;
-        background-color: #d17112; /* Зеленый цвет для нажатых ладов */
-        z-index: 3 !important;
-      }
-      
-      &:hover {
-        opacity: 1;
-        z-index: 4;
-      }
+        .fret {
+            opacity: 0;
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #1e1e1e;
+            border: 1px solid #333;
+            cursor: pointer;
+            font-size: 10px;
+            transition:
+                background-color 0.3s,
+                opacity 0.1s;
+            user-select: none;
+
+            &-1 {
+                margin-left: 2px;
+            }
+
+            &-2,
+            &-3,
+            &-4,
+            &-5,
+            &-6,
+            &-7,
+            &-8,
+            &-9,
+            &-10 {
+                margin-left: 5px;
+            }
+
+            &-11,
+            &-12 {
+                margin-left: 2px;
+            }
+
+            &_pressed {
+                opacity: 1;
+                background-color: #d17112; /* Зеленый цвет для нажатых ладов */
+                z-index: 3 !important;
+            }
+
+            &:hover {
+                opacity: 1;
+                z-index: 4;
+            }
+        }
     }
-  }
 }

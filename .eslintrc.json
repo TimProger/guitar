@@ -1,0 +1,12 @@
+{
+    "extends": [
+      "plugin:prettier/recommended"
+    ],
+    "rules": {
+      "no-unused-vars": "off",
+      "no-undef": "off",
+      "prettier/prettier": ["error", {}, {
+        "usePrettierrc": true
+      }]
+    }
+}

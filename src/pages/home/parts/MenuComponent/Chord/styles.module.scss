@@ -1,114 +1,114 @@
 .chord {
-  width: 140px;
-  height: 180px;
-  display: flex;
-  flex-direction: column;
-  border: 1px solid #444;
-  border-radius: 6px;
-  padding: 8px;
-  background: radial-gradient(circle at center, #3D3B40 0%, #211F23 84%);
-  font-family: Arial, sans-serif;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  color: #eee;
+    width: 140px;
+    height: 180px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #444;
+    border-radius: 6px;
+    padding: 8px;
+    background: radial-gradient(circle at center, #3d3b40 0%, #211f23 84%);
+    font-family: Arial, sans-serif;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    color: #eee;
 
-  &_active{
-    border: 1px solid #ff8c00;
-  }
-
-  .fretboard {
-    display: grid;
-    grid-template-columns: 20px repeat(4, 1fr);
-    grid-template-rows: 17px repeat(6, 1fr);
-    gap: 2px;
-    margin-bottom: 8px;
-    margin-right: 5px;
-
-    .fret-label {
-      font-size: 10px;
-      color: #aaa;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      width: 17px;
+    &_active {
+        border: 1px solid #ff8c00;
     }
 
-    .string-name {
-      font-size: 12px;
-      color: #ddd;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      font-weight: bold;
-      margin-right: 5px;
-      height: 17px;
+    .fretboard {
+        display: grid;
+        grid-template-columns: 20px repeat(4, 1fr);
+        grid-template-rows: 17px repeat(6, 1fr);
+        gap: 2px;
+        margin-bottom: 8px;
+        margin-right: 5px;
+
+        .fret-label {
+            font-size: 10px;
+            color: #aaa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            width: 17px;
+        }
+
+        .string-name {
+            font-size: 12px;
+            color: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            font-weight: bold;
+            margin-right: 5px;
+            height: 17px;
+        }
+
+        .fret {
+            position: relative;
+            border: 1px solid #3a3a3a;
+            background: rgba(30, 30, 30, 0.7);
+            border-radius: 2px;
+            max-width: 17px;
+            min-height: 17px;
+
+            &.active {
+                background: #ff8c00;
+                box-shadow: 0 0 4px rgba(255, 140, 0, 0.6);
+            }
+
+            &.closed::before {
+                content: '';
+                position: absolute;
+                left: -6px;
+                top: 48%;
+                transform: translateY(-50%);
+                width: 9px;
+                height: 9px;
+                border: 2px solid #5f5f5f;
+                border-radius: 50%;
+                background: transparent;
+            }
+
+            &.open::before {
+                content: '';
+                position: absolute;
+                left: -6px;
+                top: 48%;
+                transform: translateY(-50%);
+                width: 9px;
+                height: 9px;
+                border: 2px solid #ff8c00;
+                border-radius: 50%;
+                background: transparent;
+            }
+
+            &.last::after {
+                content: attr(data-fret);
+                position: absolute;
+                left: 6px;
+                top: 48%;
+                transform: translateY(-50%);
+                width: 9px;
+                height: 9px;
+                border: 2px solid #ff8c00;
+                border-radius: 50%;
+                background: transparent;
+                font-size: 10px;
+                text-align: center;
+                padding: 2px;
+                line-height: 0.8; // Фиксирует вертикальное выравнивание
+                padding-left: 0.8px; // Микро-коррекция по горизонтали
+            }
+        }
     }
 
-    .fret {
-      position: relative;
-      border: 1px solid #3a3a3a;
-      background: rgba(30, 30, 30, 0.7);
-      border-radius: 2px;
-      max-width: 17px;
-      min-height: 17px;
-
-      &.active {
-        background: #ff8c00;
-        box-shadow: 0 0 4px rgba(255, 140, 0, 0.6);
-      }
-
-      &.closed::before {
-        content: '';
-        position: absolute;
-        left: -6px;
-        top: 48%;
-        transform: translateY(-50%);
-        width: 9px;
-        height: 9px;
-        border: 2px solid #5f5f5f;
-        border-radius: 50%;
-        background: transparent;
-      }
-
-      &.open::before {
-        content: '';
-        position: absolute;
-        left: -6px;
-        top: 48%;
-        transform: translateY(-50%);
-        width: 9px;
-        height: 9px;
-        border: 2px solid #ff8c00;
-        border-radius: 50%;
-        background: transparent;
-      }
-
-      &.last::after {
-        content: attr(data-fret);
-        position: absolute;
-        left: 6px;
-        top: 48%;
-        transform: translateY(-50%);
-        width: 9px;
-        height: 9px;
-        border: 2px solid #ff8c00;
-        border-radius: 50%;
-        background: transparent;
-        font-size: 10px;
+    .chord-name {
+        font-size: 12px;
+        color: #fff;
         text-align: center;
-        padding: 2px;
-        line-height: .8; // Фиксирует вертикальное выравнивание
-        padding-left: 0.8px; // Микро-коррекция по горизонтали
-      }
+        border-top: 1px solid #444;
+        font-weight: bold;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
     }
-  }
-
-  .chord-name {
-    font-size: 12px;
-    color: #fff;
-    text-align: center;
-    border-top: 1px solid #444;
-    font-weight: bold;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-  }
 }

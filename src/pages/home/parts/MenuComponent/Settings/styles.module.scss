@@ -1,4 +1,4 @@
-.settings{
+.settings {
     width: 100%;
     height: 100%;
     display: flex;
@@ -8,10 +8,10 @@
     gap: 7px;
     overflow: auto;
 
-    & .setting{
+    & .setting {
         height: auto;
         padding: 15px;
-        background: radial-gradient(circle at center, #3D3B40 0%, #211F23 84%);
+        background: radial-gradient(circle at center, #3d3b40 0%, #211f23 84%);
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         border: 1px solid #444;
         border-radius: 6px;
@@ -19,35 +19,35 @@
         align-items: flex-start;
         flex-direction: column;
 
-        & .volumeControl{
+        & .volumeControl {
             display: flex;
             gap: 20px;
             align-items: center;
             justify-content: center;
-            
-            & input{
+
+            & input {
                 width: 180px;
             }
         }
     }
 
-    & .volume{
+    & .volume {
         gap: 10px;
     }
 
-    & .tuning{
+    & .tuning {
         margin-left: 20px;
         display: flex;
         gap: 10px;
 
-        & .tuningInputs{
+        & .tuningInputs {
             display: flex;
             gap: 10px;
             flex-direction: column;
             align-items: center;
             justify-content: center;
 
-            & .tuningInput{
+            & .tuningInput {
                 display: flex;
                 gap: 10px;
             }

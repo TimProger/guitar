@@ -1,4 +1,5 @@
 {
+  "eslint.validate": ["javascript", "typescript", "typescriptreact"],
   "compilerOptions": {
     // Type checking configuration
     "allowUnreachableCode": false,

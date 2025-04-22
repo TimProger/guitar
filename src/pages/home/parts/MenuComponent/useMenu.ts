@@ -1,6 +1,6 @@
-import { InstrumentController } from "@/modules/instrument/InstrumentController";
-import { IChord } from "@/types/guitar.types";
-import { useEffect, useState } from "react";
+import { InstrumentController } from '@/modules/instrument/InstrumentController';
+import { IChord } from '@/types/guitar.types';
+import { useEffect, useState } from 'react';
 
 interface IUseMenu {
     setStringsData: any;
@@ -22,25 +22,26 @@ interface IUseMenuReturn {
     startRegistration: () => void;
 }
 
-export const useMenu = ({setStringsData, instrument}: IUseMenu): IUseMenuReturn => {
-
-    const [page, setPage] = useState<'chords' | 'settings'>('settings')
-    const [selectedChordId, setSelectedChordId] = useState<number | null>(null)
-    const [activeChords, setActiveChords] = useState<Record<number, IChord>>([])
+export const useMenu = ({ setStringsData, instrument }: IUseMenu): IUseMenuReturn => {
+    const [page, setPage] = useState<'chords' | 'settings'>('settings');
+    const [selectedChordId, setSelectedChordId] = useState<number | null>(null);
+    const [activeChords, setActiveChords] = useState<Record<number, IChord>>([]);
     const [timeoutId, setTimeoutId] = useState<number>(-1);
     const [volume, setVolume] = useState<number>(1);
-    const [tuning, setTuning] = useState<string[]>(instrument.getStringManager().getCurrentTuning());
+    const [tuning, setTuning] = useState<string[]>(
+        instrument.getStringManager().getCurrentTuning()
+    );
     const [_, forceUpdate] = useState({});
     const triggerUpdate = () => forceUpdate({});
 
     const startRegistration = () => {
-        instrument.startChordRegistration()
+        instrument.startChordRegistration();
         setSelectedChordId(-1);
-    }
+    };
 
     useEffect(() => {
         instrument.setForceUpdate(() => {
-            console.log(instrument.getKeyboardController().getSelectedChordId()) // Получаем ID зажатого аккорда
+            console.log(instrument.getKeyboardController().getSelectedChordId()); // Получаем ID зажатого аккорда
             setSelectedChordId(instrument.getKeyboardController().getSelectedChordId()); // Создаём новый объект
             setActiveChords({ ...instrument.getKeyboardController().getRegisteredChords() }); // Создаём новый объект
             setTuning([...instrument.getStringManager().getCurrentTuning()]); // Обновляем строй
@@ -55,7 +56,7 @@ export const useMenu = ({setStringsData, instrument}: IUseMenu): IUseMenuReturn 
         let id = window.setTimeout(() => {
             instrument.setVolume(value);
         }, 500);
-        setTimeoutId(id)
+        setTimeoutId(id);
     };
 
     const updateTuning = (newTuning: string[]) => {
@@ -73,6 +74,6 @@ export const useMenu = ({setStringsData, instrument}: IUseMenu): IUseMenuReturn 
         activeChords,
         selectedChordId,
         setSelectedChordId,
-        startRegistration
-    }
-}
+        startRegistration,
+    };
+};

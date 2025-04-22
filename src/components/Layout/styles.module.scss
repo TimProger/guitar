@@ -1,30 +1,31 @@
-.layout{
+.layout {
     display: flex;
     flex-direction: column;
     height: 100vh;
     max-height: 100vh;
     width: 100vw;
 
-    & header{
+    & header {
         background: linear-gradient(
             to top,
-            #1A181B 0%,     // Самый тёмный (низ)
-            #2A282D 100%    // Чуть светлее (верх)
-          );
+            #1a181b 0%,
+            // Самый тёмный (низ)
+            #2a282d 100% // Чуть светлее (верх)
+        );
         color: #f0f0f0;
         padding: 20px;
         position: absolute;
         width: 100%;
         z-index: 3;
 
-        & div{
+        & div {
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
     }
 
-    & main{
+    & main {
         width: 100%;
         height: 100%;
         display: flex;
