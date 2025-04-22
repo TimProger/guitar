@@ -53,7 +53,7 @@ export const useMenu = ({ setStringsData, instrument }: IUseMenu): IUseMenuRetur
         setVolume(value);
         window.clearTimeout(timeoutId);
         let id = window.setTimeout(() => {
-            instrument.setVolume(value);
+            instrument.utilityMethods().setVolume(value);
         }, 500);
         setTimeoutId(id);
     };

@@ -4,6 +4,7 @@ import { SampleManager } from '../audio/SampleManager';
 import { AudioEngine } from '../audio/AudioEngine';
 import { StringManager } from './StringManager';
 import { ChordManager } from '../keyboard/ChordManager';
+import { InstrumentUtilities } from './InstrumentUtilities';
 
 export type IStrings = Record<IStringNames, { frets: Record<string, IFret> }>;
 
@@ -13,6 +14,7 @@ export class InstrumentController {
     private audioEngine: AudioEngine;
     private keyboardController: KeyboardController;
     private sampleManager: SampleManager;
+    private utilities: InstrumentUtilities;
     protected forceUpdate: (() => void) | null = null; // Колбек для обновления UI
 
     constructor() {
@@ -22,6 +24,7 @@ export class InstrumentController {
         this.chordManager = new ChordManager();
         this.audioEngine = new AudioEngine(this.sampleManager);
         this.keyboardController = new KeyboardController(this.chordManager, this.audioEngine);
+        this.utilities = new InstrumentUtilities(this);
 
         this.initialize();
     }
@@ -36,8 +39,20 @@ export class InstrumentController {
         this.forceUpdate = callback;
     }
 
-    public setVolume(level: number) {
-        this.audioEngine.setVolume(level);
+    public utilityMethods(): InstrumentUtilities {
+        return this.utilities;
+    }
+
+    public getSampleManager(): SampleManager {
+        return this.sampleManager;
+    }
+
+    public getChordManager(): ChordManager {
+        return this.chordManager;
+    }
+
+    public getAudioEngine(): AudioEngine {
+        return this.audioEngine;
     }
 
     public getKeyboardController(): KeyboardController {
