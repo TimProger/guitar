@@ -1,8 +1,6 @@
-import { createSampleMap } from './utils';
-
 type SampleMap = Record<string, string>;
 
-export const NOTES = [
+const NOTES = [
     'D2',
     'E2',
     'F2',
@@ -21,6 +19,18 @@ export const NOTES = [
     'G4',
     'B4',
 ];
+
+export function createSampleMap(instrumentType: string, NOTES: string[]) {
+    const sampleMap: Record<string, string> = {};
+
+    NOTES.forEach((note) => {
+        // Преобразуем F# в Fs для имени файла
+        const fileName = note.replace('#', 's');
+        sampleMap[note] = `${instrumentType}/${fileName}.mp3`;
+    });
+
+    return sampleMap;
+}
 
 export class SampleManager {
     private samplesCache: Map<string, SampleMap> = new Map();
