@@ -1,4 +1,4 @@
-import { IFret, IChord, IStringNames } from '../../types/guitar.types';
+import { IChord, IGuitarObj, IStrings } from '../../types/guitar.types';
 import { KeyboardController } from '../keyboard/KeyboardController';
 import { SampleManager } from '../audio/SampleManager';
 import { AudioEngine } from '../audio/AudioEngine';
@@ -6,21 +6,52 @@ import { StringManager } from './StringManager';
 import { ChordManager } from '../keyboard/ChordManager';
 import { InstrumentUtilities } from './InstrumentUtilities';
 
-export type IStrings = Record<IStringNames, { frets: Record<string, IFret> }>;
-
 export class InstrumentController {
-    private stringManager: StringManager;
-    private chordManager: ChordManager;
-    private audioEngine: AudioEngine;
-    private keyboardController: KeyboardController;
-    private sampleManager: SampleManager;
-    private utilities: InstrumentUtilities;
+    private stringManager: StringManager; // Менеджер струн
+    private chordManager: ChordManager; // Менеджер аккордов
+    private audioEngine: AudioEngine; // Модуль для работы со звуком
+    private keyboardController: KeyboardController; // Модуль для работы с клавиатурой
+    private sampleManager: SampleManager; // Модуль для создания путей к сэмплам
+    private utilities: InstrumentUtilities; // Утилиты для работы с инструментом
     protected forceUpdate: (() => void) | null = null; // Колбек для обновления UI
+    private guitarObj: IGuitarObj = {
+        type: 'guitar',
+        name: 'Acoustic Guitar',
+        id: 'guitar-acoustic',
+        tuning: ['E2', 'A2', 'D3', 'G3', 'B3', 'E4'],
+        stringsCount: 5,
+        fretsCount: 21,
+    };
+    // private guitarObjArray: IGuitarObj[] = [
+    //     {
+    //         type: 'guitar',
+    //         name: 'Acoustic Guitar',
+    //         id: 'guitar-acoustic',
+    //         tuning: ['E2', 'A2', 'D3', 'G3', 'B3', 'E4'],
+    //         stringsCount: 6,
+    //         fretsCount: 21,
+    //     },
+    //     {
+    //         type: 'guitar',
+    //         name: 'Electric Guitar',
+    //         id: 'guitar-electric',
+    //         tuning: ['E2', 'A2', 'D3', 'G3', 'B3', 'E4'],
+    //         stringsCount: 6,
+    //         fretsCount: 24,
+    //     },
+    //     {
+    //         type: 'guitar',
+    //         name: 'Bass Guitar',
+    //         id: 'guitar-bass',
+    //         tuning: ['E1', 'A1', 'D2', 'G2'],
+    //         stringsCount: 4,
+    //         fretsCount: 24,
+    //     },
+    // ];
 
     constructor() {
-        const defaultTuning = ['E2', 'A2', 'D3', 'G3', 'B3', 'E4'];
-        this.sampleManager = new SampleManager('guitar-acoustic');
-        this.stringManager = new StringManager(defaultTuning);
+        this.sampleManager = new SampleManager(this.guitarObj.id);
+        this.stringManager = new StringManager(this.guitarObj);
         this.chordManager = new ChordManager();
         this.audioEngine = new AudioEngine(this.sampleManager);
         this.keyboardController = new KeyboardController(this.chordManager, this.audioEngine);
@@ -63,8 +94,8 @@ export class InstrumentController {
         return this.stringManager;
     }
 
-    public async pressFret(stringName: IStringNames, fretIndex: number) {
-        const note = this.stringManager.pressFret(stringName, fretIndex);
+    public async pressFret(stringIndex: number, fretIndex: number) {
+        const note = this.stringManager.pressFret(stringIndex, fretIndex);
         await this.audioEngine.playSample(note);
         this.forceUpdate?.(); // Обновляем UI
     }
@@ -78,20 +109,20 @@ export class InstrumentController {
     private createChordFromStrings(strings: IStrings): IChord {
         const chord: IChord = {
             name: '',
-            strings: {
-                E2: { index: -1, note: '', isPressed: false },
-                A: { index: -1, note: '', isPressed: false },
-                D: { index: -1, note: '', isPressed: false },
-                G: { index: -1, note: '', isPressed: false },
-                B: { index: -1, note: '', isPressed: false },
-                E1: { index: -1, note: '', isPressed: false },
-            },
+            strings: [
+                { index: -1, note: '', isPressed: false },
+                { index: -1, note: '', isPressed: false },
+                { index: -1, note: '', isPressed: false },
+                { index: -1, note: '', isPressed: false },
+                { index: -1, note: '', isPressed: false },
+                { index: -1, note: '', isPressed: false },
+            ],
         };
 
-        (Object.keys(strings) as IStringNames[]).forEach((stringName) => {
-            Object.values(strings[stringName].frets).forEach((fret) => {
+        strings.map((stringName, index) => {
+            Object.values(stringName.frets).forEach((fret) => {
                 if (fret.isPressed) {
-                    chord.strings[stringName] = fret;
+                    chord.strings[index] = fret;
                 }
             });
         });

@@ -1,11 +1,11 @@
-import { IStrings, IStringNames } from '../../types/guitar.types';
+import { IStrings, IStringNames, IGuitarObj } from '../../types/guitar.types';
 import { generateNoteSequence, generateFrets } from '../utils/fretUtils';
 
 export class StringManager {
     private strings: IStrings;
     protected forceUpdate: (() => void) | null = null; // Колбек для обновления UI
 
-    constructor(private tuning: string[]) {
+    constructor(private guitarObj: IGuitarObj) {
         this.strings = this.initStrings();
     }
 
@@ -13,27 +13,27 @@ export class StringManager {
         this.forceUpdate = callback;
     }
 
-    private initStrings(): IStrings {
-        const newStrings = {
-            E1: { frets: generateFrets(generateNoteSequence(this.tuning[5], 21)) },
-            B: { frets: generateFrets(generateNoteSequence(this.tuning[4], 21)) },
-            G: { frets: generateFrets(generateNoteSequence(this.tuning[3], 21)) },
-            D: { frets: generateFrets(generateNoteSequence(this.tuning[2], 21)) },
-            A: { frets: generateFrets(generateNoteSequence(this.tuning[1], 21)) },
-            E2: { frets: generateFrets(generateNoteSequence(this.tuning[0], 21)) },
-        };
-
-        Object.values(newStrings).forEach((string) => {
-            string.frets[0].isPressed = true;
-        });
-
-        return newStrings;
+    // Генерация имён струн на основе их количества
+    private getStringNames(): IStringNames[] {
+        const allNames: IStringNames[] = ['E2', 'A', 'D', 'G', 'B', 'E1'];
+        return allNames.slice(0, this.guitarObj.stringsCount).reverse();
     }
 
-    public pressFret(stringName: IStringNames, fretIndex: number): string {
-        const string = this.strings[stringName];
+    private initStrings(): IStrings {
+        const stringNames = this.getStringNames();
 
-        Object.values(string.frets).forEach((fret) => {
+        return stringNames.map((name, index) => ({
+            name,
+            frets: generateFrets(
+                generateNoteSequence(this.guitarObj.tuning[index], this.guitarObj.fretsCount)
+            ),
+        }));
+    }
+
+    public pressFret(stringIndex: number, fretIndex: number): string {
+        const string = this.strings[stringIndex];
+
+        string.frets.forEach((fret) => {
             fret.isPressed = false;
         });
 
@@ -46,11 +46,11 @@ export class StringManager {
     }
 
     public getCurrentTuning(): string[] {
-        return this.tuning;
+        return this.guitarObj.tuning;
     }
 
     public setTuning(newTuning: string[]) {
-        this.tuning = [...newTuning];
+        this.guitarObj.tuning = [...newTuning];
         this.strings = this.initStrings();
         this.forceUpdate?.(); // Обновляем UI
     }

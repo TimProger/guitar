@@ -2,17 +2,24 @@ import React, { useEffect, useState } from 'react';
 import s from './styles.module.scss';
 import { IChord } from '@/types/guitar.types';
 import classNames from 'classnames';
+import { StringManager } from '@/modules/instrument/StringManager';
 
 interface ChordDiagramProps {
     selectedChordId: number | null;
     position: number;
     chord: IChord;
+    stringsManager: StringManager;
 }
 
-const ChordDiagram: React.FC<ChordDiagramProps> = ({ position, selectedChordId, chord }) => {
+const ChordDiagram: React.FC<ChordDiagramProps> = ({
+    stringsManager,
+    position,
+    selectedChordId,
+    chord,
+}) => {
     const [minFret, setMinFret] = useState<number>(0);
 
-    const stringsOrder: (keyof IChord['strings'])[] = ['E1', 'B', 'G', 'D', 'A', 'E2'];
+    const strings = stringsManager.getStringsData();
 
     // Функция для вычисления минимального зажатого лада
     const calculateMinFret = (chord: IChord): number => {
@@ -43,28 +50,46 @@ const ChordDiagram: React.FC<ChordDiagramProps> = ({ position, selectedChordId, 
                     </div>
                 ))}
 
-                {stringsOrder.map((stringName) => {
-                    const { index } = chord.strings[stringName];
+                {strings.map((stringObj, stringIndex) => {
+                    const stringData = stringsManager.getStringsData()[stringIndex];
+                    const pressedFret = stringData.frets.find((fret) => fret.isPressed);
+                    const index = pressedFret ? pressedFret.index : -1;
                     const adjustedIndex = index - minFret + 1;
                     const showMarker = index > 0 && adjustedIndex <= 6;
 
                     return (
-                        <React.Fragment key={stringName}>
+                        <React.Fragment key={stringObj.name}>
                             <div className={s['string-name']}>
-                                {stringName === 'E2' ? 'E' : stringName === 'E1' ? 'e' : stringName}
+                                {stringObj.name === 'E2'
+                                    ? 'E'
+                                    : stringObj.name === 'E1'
+                                      ? 'e'
+                                      : stringObj.name}
                             </div>
 
                             {[1, 2, 3, 4].map((fretNum) => (
                                 <div
-                                    key={`${stringName}-${fretNum}`}
+                                    key={`${stringObj.name}-${fretNum}`}
                                     className={`
-                    ${s.fret} 
-                    ${showMarker && adjustedIndex === fretNum ? s.active : ''}
-                    ${fretNum === 1 && index === -1 && s.closed}
-                    ${fretNum === 1 && index === 0 && s.open}
-                    ${fretNum === 4 && index > minFret + 3 && s.last}
-                  `}
+                                        ${s.fret} 
+                                        ${showMarker && adjustedIndex === fretNum ? s.active : ''}
+                                        ${fretNum === 1 && index === -1 ? s.closed : ''}
+                                        ${fretNum === 1 && index === 0 ? s.open : ''}
+                                        ${fretNum === 4 && index > minFret + 3 ? s.last : ''}
+                                    `}
                                     data-fret={fretNum === 4 && index > minFret + 3 ? index : ''}
+                                    onClick={() => {
+                                        const fretToPress = minFret + fretNum - 1;
+                                        stringsManager.pressFret(stringIndex, fretToPress);
+                                    }}
+                                    tabIndex={0}
+                                    role="button"
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            const fretToPress = minFret + fretNum - 1;
+                                            stringsManager.pressFret(stringIndex, fretToPress);
+                                        }
+                                    }}
                                 />
                             ))}
                         </React.Fragment>

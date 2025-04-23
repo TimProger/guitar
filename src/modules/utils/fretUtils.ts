@@ -1,13 +1,11 @@
 import { IFret } from '@/types/guitar.types';
 
-export function generateFrets(notes: string[]): { [note: string]: IFret } {
-    const fretsObject: { [note: string]: IFret } = {};
+export function generateFrets(notes: string[]): IFret[] {
+    const fretsObject: IFret[] = [];
     notes.forEach((note, index) => {
         fretsObject[index] = { index, note: note, isPressed: false };
     });
-    Object.keys(fretsObject).map((el, index) =>
-        index === 0 ? (fretsObject[el].isPressed = true) : {}
-    );
+    fretsObject[0].isPressed = true; // Устанавливаем первый лад как нажатый по умолчанию
     return fretsObject;
 }
 

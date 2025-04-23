@@ -1,35 +1,32 @@
 import React from 'react';
 import classNames from 'classnames';
 import s from './styles.module.scss';
-import { IFret, IStrings } from '@/types/guitar.types';
+import { IFret } from '@/types/guitar.types';
 
 // Типизация пропсов для компонента String
 interface StringProps {
-    name: keyof IStrings;
-    frets: { [note: string]: IFret };
-    pressFret: (stringName: keyof IStrings, fretId: string, noteIndex: number) => void;
+    frets: IFret[];
+    pressFret: (stringIndex: number, noteIndex: number) => void;
     index: number;
 }
 
 // Компонент для отображения струны
-const StringComponent: React.FC<StringProps> = ({ name, frets, pressFret, index }) => {
+const StringComponent: React.FC<StringProps> = ({ frets, pressFret, index }) => {
     return (
         <div className={classNames(s.string, s[`string-${index + 1}`])}>
             <div className={s.frets}>
-                {Object.keys(frets).map((fretId, noteIndex) => (
+                {frets.map((fretId, noteIndex) => (
                     <div
-                        key={fretId}
+                        key={fretId.index}
                         className={classNames(s.fret, s[`fret-${noteIndex}`], {
-                            [s.fret_pressed]: frets[fretId].isPressed,
+                            [s.fret_pressed]: frets[noteIndex].isPressed,
                         })}
-                        onKeyDown={(e) =>
-                            e.key === 'Enter' && pressFret(name, frets[fretId].note, noteIndex)
-                        }
+                        onKeyDown={(e) => e.key === 'Enter' && pressFret(index, noteIndex)}
                         role="button"
                         tabIndex={0}
-                        onClick={() => pressFret(name, frets[fretId].note, noteIndex)}
+                        onClick={() => pressFret(index, noteIndex)}
                     >
-                        {frets[fretId].note}
+                        {frets[noteIndex].note}
                     </div>
                 ))}
             </div>

@@ -1,7 +1,4 @@
-import { IFret, IStringNames } from '../../types/guitar.types';
 import { InstrumentController } from './InstrumentController';
-
-export type IStrings = Record<IStringNames, { frets: Record<string, IFret> }>;
 
 export class InstrumentUtilities {
     private instrumentController: InstrumentController;

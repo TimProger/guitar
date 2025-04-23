@@ -28,26 +28,15 @@ export interface IString {
 }
 
 // Интерфейс для струны
-export interface IStrings {
-    E2: IString;
-    A: IString;
-    D: IString;
-    G: IString;
-    B: IString;
-    E1: IString;
-}
+export type IStrings = {
+    name: IStringNames;
+    frets: IFret[];
+}[];
 
 // Интерфейс для аккорда
 export interface IChord {
     name: string;
-    strings: {
-        E1: IFret;
-        B: IFret;
-        G: IFret;
-        D: IFret;
-        A: IFret;
-        E2: IFret;
-    };
+    strings: IFret[];
 }
 
 export interface IActiveChord {
@@ -55,4 +44,13 @@ export interface IActiveChord {
     index: number;
     chord: IChord;
     timestamp: number;
+}
+
+export interface IGuitarObj {
+    type: string;
+    name: string;
+    id: string;
+    tuning: string[];
+    stringsCount: number;
+    fretsCount: number;
 }

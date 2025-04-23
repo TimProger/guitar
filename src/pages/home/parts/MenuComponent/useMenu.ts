@@ -1,5 +1,5 @@
-import { InstrumentController, IStrings } from '@/modules/instrument/InstrumentController';
-import { IChord } from '@/types/guitar.types';
+import { InstrumentController } from '@/modules/instrument/InstrumentController';
+import { IChord, IStrings } from '@/types/guitar.types';
 import { useEffect, useState } from 'react';
 
 interface IUseMenu {

@@ -49,6 +49,7 @@ const MenuComponent: React.FC<IMenuProps> = ({ setStringsData, instrument }) => 
                                     position={position}
                                     key={position}
                                     chord={activeChords[position]}
+                                    stringsManager={instrument.getStringManager()}
                                 />
                             );
                         })}

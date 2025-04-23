@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { IStringNames } from '@/types/guitar.types';
-import { InstrumentController, IStrings } from '../../modules/instrument/InstrumentController';
+import { IStrings } from '@/types/guitar.types';
+import { InstrumentController } from '../../modules/instrument/InstrumentController';
 import StringComponent from './parts/StringComponent';
 import s from './styles.module.scss';
 import MenuComponent from './parts/MenuComponent';
@@ -12,10 +12,10 @@ interface IHomeProps {}
 const instrument = new InstrumentController(); // Один на всё приложение
 
 const Home: React.FC<IHomeProps> = ({}) => {
-    const [stringsData, setStringsData] = useState<IStrings | null>(null);
+    const [stringsData, setStringsData] = useState<IStrings>([]);
 
-    const pressFret = (stringName: IStringNames, _note: string, noteIndex: number) => {
-        instrument.pressFret(stringName, noteIndex);
+    const pressFret = (stringIndex: number, noteIndex: number) => {
+        instrument.pressFret(stringIndex, noteIndex);
     };
 
     useEffect(() => {
@@ -44,12 +44,11 @@ const Home: React.FC<IHomeProps> = ({}) => {
                 <div className={s.container}></div>
                 <img src="/images/guitar.png" alt="guitar_img" draggable="false" />
                 <div className={s.strings}>
-                    {stringsData &&
-                        Object.keys(stringsData).map((stringName, index) => (
+                    {!!stringsData.length &&
+                        stringsData.map((stringObj, index) => (
                             <StringComponent
-                                key={stringName}
-                                name={stringName as IStringNames}
-                                frets={stringsData[stringName as IStringNames].frets}
+                                key={stringObj.name}
+                                frets={stringObj.frets}
                                 pressFret={pressFret}
                                 index={index}
                             />
