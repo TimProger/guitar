@@ -2,19 +2,31 @@ import React, { useEffect, useState } from 'react';
 import s from './styles.module.scss';
 import classNames from 'classnames';
 import { tuningPresets } from '../../../../../modules/instrument/InstrumentSettings';
+import { IGuitarObj } from '@/types/guitar.types';
 
 interface ISettingsProps {
     volume: number;
     tuning: string[];
     onVolumeChange: (value: number) => void;
     onTuningChange: (tuning: string[]) => void;
+    guitarObjArray: IGuitarObj[];
+    selectedGuitarObj: IGuitarObj;
+    selectGuitarObj: (guitarObj: IGuitarObj) => void;
 }
 
 const strings = ['e', 'A', 'D', 'G', 'B', 'E'];
 export const NOTES = ['E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B', 'C', 'C#', 'D', 'D#'];
 export const NUMBERS = [1, 2, 3, 4, 5];
 
-const Settings: React.FC<ISettingsProps> = ({ volume, tuning, onVolumeChange, onTuningChange }) => {
+const Settings: React.FC<ISettingsProps> = ({
+    volume,
+    tuning,
+    onVolumeChange,
+    onTuningChange,
+    guitarObjArray,
+    selectedGuitarObj,
+    selectGuitarObj,
+}) => {
     const [localTuning, setLocalTuning] = useState<
         {
             note: string;
@@ -138,6 +150,21 @@ const Settings: React.FC<ISettingsProps> = ({ volume, tuning, onVolumeChange, on
                 </div>
             </div>
             <div className={classNames(s.setting, s.volume)}>
+                <label htmlFor={`volume-input`}>Volume</label>
+                <div className={s.volumeControl}>
+                    <input
+                        id={`volume-input`}
+                        type="range"
+                        min="1"
+                        max="10"
+                        step="1"
+                        value={volume}
+                        onChange={(e) => onVolumeChange(Number(e.target.value))}
+                    />
+                    <span>{volume}</span>
+                </div>
+            </div>
+            <div className={classNames(s.setting, s.volume)}>
                 <label htmlFor={`release-input`}>Release</label>
                 <div className={s.volumeControl}>
                     <input
@@ -150,6 +177,25 @@ const Settings: React.FC<ISettingsProps> = ({ volume, tuning, onVolumeChange, on
                         onChange={(e) => setRelease(Number(e.target.value))}
                     />
                     <span>{release}</span>
+                </div>
+            </div>
+            <div className={classNames(s.setting, s.volume)}>
+                <label htmlFor={`guitar-type-input`}>Guitar type</label>
+                <div className={s.volumeControl}>
+                    <select
+                        id="guitar-type-input"
+                        value={selectedGuitarObj.id}
+                        onChange={(e) => {
+                            const selected = guitarObjArray.find((g) => g.id === e.target.value);
+                            if (selected) selectGuitarObj(selected);
+                        }}
+                    >
+                        {guitarObjArray.map((guitarObj) => (
+                            <option key={guitarObj.id} value={guitarObj.id}>
+                                {guitarObj.name}
+                            </option>
+                        ))}
+                    </select>
                 </div>
             </div>
         </div>

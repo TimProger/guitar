@@ -23,6 +23,9 @@ const MenuComponent: React.FC<IMenuProps> = ({ setStringsData, instrument }) => 
         updateVolume,
         updateTuning,
         startRegistration,
+        guitarObjArray,
+        selectedGuitarObj,
+        selectGuitarObj,
     } = useMenu({ setStringsData, instrument });
 
     const displayPages = () => {
@@ -62,6 +65,9 @@ const MenuComponent: React.FC<IMenuProps> = ({ setStringsData, instrument }) => 
                         tuning={tuning}
                         onVolumeChange={updateVolume}
                         onTuningChange={updateTuning}
+                        guitarObjArray={guitarObjArray}
+                        selectedGuitarObj={selectedGuitarObj}
+                        selectGuitarObj={selectGuitarObj}
                     />
                 );
         }

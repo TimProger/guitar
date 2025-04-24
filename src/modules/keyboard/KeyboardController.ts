@@ -64,7 +64,10 @@ export class KeyboardController {
     private registerChord(e: KeyboardEvent) {
         if (!this.currentRegisterChord) return;
 
-        this.chordManager.registerChord(+e.key - 1, this.currentRegisterChord);
+        this.chordManager.registerChord(
+            +e.key - 1,
+            JSON.parse(JSON.stringify(this.currentRegisterChord))
+        );
         this.status = 'playing';
         this.currentRegisterChord = null;
         this.forceUpdate?.();
@@ -77,7 +80,6 @@ export class KeyboardController {
             e.key <= DEFAULT_KEYBINDS.CHORD_SELECTION.max
         ) {
             this.chordManager.selectChord(-1);
-            console.log(this.chordManager.getCurrentChord());
             this.forceUpdate?.();
         }
     };

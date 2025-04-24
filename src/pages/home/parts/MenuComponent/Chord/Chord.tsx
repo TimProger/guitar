@@ -51,9 +51,10 @@ const ChordDiagram: React.FC<ChordDiagramProps> = ({
                 ))}
 
                 {strings.map((stringObj, stringIndex) => {
-                    const stringData = stringsManager.getStringsData()[stringIndex];
-                    const pressedFret = stringData.frets.find((fret) => fret.isPressed);
-                    const index = pressedFret ? pressedFret.index : -1;
+                    const { index } = chord.strings[stringIndex];
+                    // const stringData = stringsManager.getStringsData()[stringIndex];
+                    // const pressedFret = stringData.frets.find((fret) => fret.isPressed);
+                    // const index = pressedFret ? pressedFret.index : -1;
                     const adjustedIndex = index - minFret + 1;
                     const showMarker = index > 0 && adjustedIndex <= 6;
 

@@ -1,5 +1,5 @@
 import { InstrumentController } from '@/modules/instrument/InstrumentController';
-import { IChord, IStrings } from '@/types/guitar.types';
+import { IChord, IGuitarObj, IStrings } from '@/types/guitar.types';
 import { useEffect, useState } from 'react';
 
 interface IUseMenu {
@@ -20,6 +20,9 @@ interface IUseMenuReturn {
     selectedChordId: number | null;
     setSelectedChordId: (id: number | null) => void;
     startRegistration: () => void;
+    guitarObjArray: IGuitarObj[];
+    selectedGuitarObj: IGuitarObj;
+    selectGuitarObj: (guitarObj: IGuitarObj) => void;
 }
 
 export const useMenu = ({ setStringsData, instrument }: IUseMenu): IUseMenuReturn => {
@@ -28,6 +31,12 @@ export const useMenu = ({ setStringsData, instrument }: IUseMenu): IUseMenuRetur
     const [activeChords, setActiveChords] = useState<Record<number, IChord>>([]);
     const [timeoutId, setTimeoutId] = useState<number>(-1);
     const [volume, setVolume] = useState<number>(1);
+    const [selectedGuitarObj, setSelectedGuitarObj] = useState<IGuitarObj>(
+        instrument.getGuitarObj()
+    );
+    const [guitarObjArray, setGuitarObjArray] = useState<IGuitarObj[]>(
+        instrument.getGuitarObjArray()
+    );
     const [tuning, setTuning] = useState<string[]>(
         instrument.getStringManager().getCurrentTuning()
     );
@@ -41,6 +50,8 @@ export const useMenu = ({ setStringsData, instrument }: IUseMenu): IUseMenuRetur
 
     useEffect(() => {
         instrument.setForceUpdate(() => {
+            setGuitarObjArray(JSON.parse(JSON.stringify(instrument.getGuitarObjArray()))); // Создаём новый объект
+            setSelectedGuitarObj(JSON.parse(JSON.stringify(instrument.getGuitarObj()))); // Создаём новый объект
             setSelectedChordId(instrument.getKeyboardController().getSelectedChordId()); // Создаём новый объект
             setActiveChords({ ...instrument.getKeyboardController().getRegisteredChords() }); // Создаём новый объект
             setTuning([...instrument.getStringManager().getCurrentTuning()]); // Обновляем строй
@@ -59,8 +70,11 @@ export const useMenu = ({ setStringsData, instrument }: IUseMenu): IUseMenuRetur
     };
 
     const updateTuning = (newTuning: string[]) => {
-        setTuning(newTuning.slice().reverse());
         instrument.getStringManager().setTuning(newTuning);
+    };
+
+    const selectGuitarObj = (guitarObj: IGuitarObj) => {
+        instrument.setGuitarObj(guitarObj);
     };
 
     return {
@@ -74,5 +88,8 @@ export const useMenu = ({ setStringsData, instrument }: IUseMenu): IUseMenuRetur
         selectedChordId,
         setSelectedChordId,
         startRegistration,
+        guitarObjArray,
+        selectedGuitarObj,
+        selectGuitarObj,
     };
 };

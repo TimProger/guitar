@@ -5,8 +5,9 @@
     flex-direction: column;
     flex-wrap: wrap;
     align-content: flex-start;
-    gap: 7px;
+    gap: 10px;
     overflow: auto;
+    margin-top: 5px;
 
     & .setting {
         height: auto;
@@ -32,6 +33,7 @@
     }
 
     & .volume {
+        width: 240px;
         gap: 10px;
     }
 
