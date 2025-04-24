@@ -5,7 +5,6 @@ import { AudioEngine } from '../audio/AudioEngine';
 import { StringManager } from './StringManager';
 import { ChordManager } from '../keyboard/ChordManager';
 import { InstrumentUtilities } from './InstrumentUtilities';
-import clonedeep from 'lodash/cloneDeep';
 
 export class InstrumentController {
     private stringManager: StringManager; // Менеджер струн
@@ -112,15 +111,13 @@ export class InstrumentController {
     }
 
     public async pressFret(stringIndex: number, fretIndex: number) {
-        console.log('chords', this.chordManager.getChords());
         const note = this.stringManager.pressFret(stringIndex, fretIndex);
         await this.audioEngine.playSample(note);
         this.forceUpdate?.(); // Обновляем UI
     }
 
     public startChordRegistration() {
-        const rawStrings = this.stringManager.getStringsData();
-        const strings: IStrings = clonedeep(rawStrings);
+        const strings = this.stringManager.getStringsData();
         const chord = this.createChordFromStrings(strings);
         this.keyboardController.startChordRegistration(chord);
     }
@@ -141,7 +138,7 @@ export class InstrumentController {
         strings.map((stringName, index) => {
             Object.values(stringName.frets).forEach((fret) => {
                 if (fret.isPressed) {
-                    chord.strings[index] = JSON.parse(JSON.stringify(fret));
+                    chord.strings[index] = fret;
                 }
             });
         });
