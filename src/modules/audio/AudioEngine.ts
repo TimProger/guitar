@@ -66,7 +66,6 @@ export class AudioEngine {
             duration: '8n',
             velocity: 1,
         });
-        console.log(this.recordedNotes);
     }
 
     cleanup() {

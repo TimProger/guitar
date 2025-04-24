@@ -1,8 +1,14 @@
 import { IChord } from '@/types/guitar.types';
-import { KeyboardControllerStatus } from './types';
 import { DEFAULT_KEYBINDS } from './KeybindPresets';
 import { AudioEngine } from '../audio/AudioEngine';
 import { ChordManager } from './ChordManager';
+
+export type KeyboardControllerStatus =
+    | 'disabled' // Полностью выключен
+    | 'idle' // Ожидание действий (работает по умолчанию)
+    | 'recording' // тест
+    | 'registrating' // Регистрация аккорда
+    | 'playing'; // Аккорд выбран и готов к проигрыванию
 
 export class KeyboardController {
     private status: KeyboardControllerStatus = 'idle';

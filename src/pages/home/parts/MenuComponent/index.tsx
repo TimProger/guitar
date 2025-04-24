@@ -37,7 +37,13 @@ const MenuComponent: React.FC<IMenuProps> = ({ setStringsData, instrument }) => 
                         <div
                             tabIndex={0}
                             role="button"
-                            onKeyDown={(e) => e.key === 'Enter' && startRegistration()}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    startRegistration();
+                                } else {
+                                    (e.currentTarget as HTMLElement).blur();
+                                }
+                            }}
                             onClick={() => startRegistration()}
                             className={classNames(s.chord, s.chord_add, {
                                 [s.chord_active]: selectedChordId === -1,

@@ -79,18 +79,6 @@ const ChordDiagram: React.FC<ChordDiagramProps> = ({
                                         ${fretNum === 4 && index > minFret + 3 ? s.last : ''}
                                     `}
                                     data-fret={fretNum === 4 && index > minFret + 3 ? index : ''}
-                                    onClick={() => {
-                                        const fretToPress = minFret + fretNum - 1;
-                                        stringsManager.pressFret(stringIndex, fretToPress);
-                                    }}
-                                    tabIndex={0}
-                                    role="button"
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter') {
-                                            const fretToPress = minFret + fretNum - 1;
-                                            stringsManager.pressFret(stringIndex, fretToPress);
-                                        }
-                                    }}
                                 />
                             ))}
                         </React.Fragment>
