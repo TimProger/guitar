@@ -15,29 +15,34 @@ export class StringManager {
 
     // Генерация имён струн на основе их количества
     private getStringNames(): IStringNames[] {
-        const allNames: IStringNames[] = ['E2', 'A', 'D', 'G', 'B', 'E1'];
-        return allNames.slice(0, this.guitarObj.stringsCount).reverse();
+        const allNames: IStringNames[] = ['E1', 'B', 'G', 'D', 'A', 'E2'];
+        return allNames.slice(0, this.guitarObj.stringsCount);
     }
 
     private initStrings(): IStrings {
         const stringNames = this.getStringNames();
 
-        return stringNames.map((name, index) => ({
-            name,
-            frets: generateFrets(
-                generateNoteSequence(this.guitarObj.tuning[index], this.guitarObj.fretsCount)
-            ),
-        }));
+        return stringNames.map((name, index) => {
+            console.log(name, index, this.guitarObj.tuning[index]);
+            return {
+                name,
+                frets: generateFrets(
+                    generateNoteSequence(this.guitarObj.tuning[index], this.guitarObj.fretsCount)
+                ),
+            };
+        });
     }
 
     public pressFret(stringIndex: number, fretIndex: number): string {
         const string = this.strings[stringIndex];
 
+        const oldFret = JSON.parse(JSON.stringify(string.frets[fretIndex]));
+
         string.frets.forEach((fret) => {
             fret.isPressed = false;
         });
 
-        string.frets[fretIndex].isPressed = true;
+        string.frets[fretIndex].isPressed = !oldFret.isPressed;
         return string.frets[fretIndex].note;
     }
 

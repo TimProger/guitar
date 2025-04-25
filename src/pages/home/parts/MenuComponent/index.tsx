@@ -89,7 +89,7 @@ const MenuComponent: React.FC<IMenuProps> = ({ setStringsData, instrument }) => 
                         role="button"
                         onClick={() => setPage('settings')}
                     >
-                        Настройки
+                        Settings
                     </div>
                     <div
                         tabIndex={0}
@@ -97,7 +97,7 @@ const MenuComponent: React.FC<IMenuProps> = ({ setStringsData, instrument }) => 
                         role="button"
                         onClick={() => setPage('chords')}
                     >
-                        Аккорды
+                        Chords
                     </div>
                 </div>
                 <div className={s.page}>{displayPages()}</div>

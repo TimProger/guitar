@@ -5,6 +5,7 @@ import { AudioEngine } from '../audio/AudioEngine';
 import { StringManager } from './StringManager';
 import { ChordManager } from '../keyboard/ChordManager';
 import { InstrumentUtilities } from './InstrumentUtilities';
+import { getChordType } from '../utils/chordUtils';
 
 export class InstrumentController {
     private stringManager: StringManager; // Менеджер струн
@@ -19,7 +20,7 @@ export class InstrumentController {
             type: 'guitar',
             name: 'Acoustic Guitar',
             id: 'guitar-acoustic',
-            tuning: ['E2', 'A2', 'D3', 'G3', 'B3', 'E4'],
+            tuning: ['E4', 'B3', 'G3', 'D3', 'A2', 'E2'],
             stringsCount: 6,
             fretsCount: 21,
             image: 'acoustic-guitar.png',
@@ -28,7 +29,7 @@ export class InstrumentController {
             type: 'guitar',
             name: 'Electric Guitar',
             id: 'guitar-electric',
-            tuning: ['E2', 'A2', 'D3', 'G3', 'B3', 'E4'],
+            tuning: ['E4', 'B3', 'G3', 'D3', 'A2', 'E2'],
             stringsCount: 6,
             fretsCount: 24,
             image: 'electric-guitar.png',
@@ -37,7 +38,7 @@ export class InstrumentController {
             type: 'guitar',
             name: 'Bass Guitar',
             id: 'guitar-bass',
-            tuning: ['E1', 'A1', 'D2', 'G2'],
+            tuning: ['G2', 'D2', 'A1', 'E1'],
             stringsCount: 4,
             fretsCount: 24,
             image: 'bass-guitar.png',
@@ -142,6 +143,17 @@ export class InstrumentController {
                 }
             });
         });
+
+        const uniqueChordNotes = [
+            ...new Set(
+                Object.values(chord.strings)
+                    .filter((note) => note.note)
+                    .map((note) => note.note)
+            ),
+        ];
+
+        const newName = getChordType(uniqueChordNotes);
+        console.log(newName, uniqueChordNotes);
 
         return chord;
     }

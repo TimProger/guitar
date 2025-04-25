@@ -43,6 +43,7 @@ const Settings: React.FC<ISettingsProps> = ({
     );
     const [release, setRelease] = useState<number>(1);
     const [presets, _] = useState<typeof tuningPresets>(tuningPresets);
+    const [oldPreset, setOldPreset] = useState<keyof typeof tuningPresets>('standard');
     const [preset, setPreset] = useState<keyof typeof tuningPresets>('standard');
 
     const handleTuningChange = (type: 'note' | 'number', index: number, value: string) => {
@@ -52,18 +53,14 @@ const Settings: React.FC<ISettingsProps> = ({
                 const updatedTuning = [...localTuning];
                 updatedTuning[index] = updatedNote;
                 setLocalTuning(updatedTuning);
-                onTuningChange(
-                    updatedTuning.map(({ note, number }) => `${note}${number}`).reverse()
-                );
+                onTuningChange(updatedTuning.map(({ note, number }) => `${note}${number}`));
                 break;
             case 'number':
                 const updatedNumber = { ...localTuning[index], number: +value };
                 const updatedTuningNumber = [...localTuning];
                 updatedTuningNumber[index] = updatedNumber;
                 setLocalTuning(updatedTuningNumber);
-                onTuningChange(
-                    updatedTuningNumber.map(({ note, number }) => `${note}${number}`).reverse()
-                );
+                onTuningChange(updatedTuningNumber.map(({ note, number }) => `${note}${number}`));
                 break;
             default:
                 break;
@@ -71,16 +68,18 @@ const Settings: React.FC<ISettingsProps> = ({
     };
 
     useEffect(() => {
-        onTuningChange(JSON.parse(JSON.stringify(presets[preset])));
-        setLocalTuning(
-            presets[preset]
-                .map((note, index) => ({
+        // Проверка на первый рендер
+        if (oldPreset !== preset) {
+            setOldPreset(preset);
+            onTuningChange(JSON.parse(JSON.stringify(presets[preset])));
+            setLocalTuning(
+                presets[preset].map((note, index) => ({
                     index,
                     note: note.includes('#') ? note.split('#')[0] : note.split('')[0],
                     number: note.includes('#') ? +note.split('#')[1] : +note.split('')[1],
                 }))
-                .reverse()
-        );
+            );
+        }
     }, [preset]);
 
     return (

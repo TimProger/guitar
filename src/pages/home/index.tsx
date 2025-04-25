@@ -45,14 +45,22 @@ const Home: React.FC<IHomeProps> = ({}) => {
                 <img src="/images/guitar.png" alt="guitar_img" draggable="false" />
                 <div className={s.strings}>
                     {!!stringsData.length &&
-                        stringsData.map((stringObj, index) => (
-                            <StringComponent
-                                key={stringObj.name}
-                                frets={stringObj.frets}
-                                pressFret={pressFret}
-                                index={index}
-                            />
-                        ))}
+                        stringsData.map((stringObj, index) => {
+                            // console.log(
+                            //     'stringObj',
+                            //     stringObj.name,
+                            //     stringObj.frets[0].note,
+                            //     index
+                            // );
+                            return (
+                                <StringComponent
+                                    key={stringObj.name}
+                                    frets={stringObj.frets}
+                                    pressFret={pressFret}
+                                    index={index}
+                                />
+                            );
+                        })}
                     {/* <button onClick={buttonHandler} >кликнsss22223</button> */}
                 </div>
             </div>

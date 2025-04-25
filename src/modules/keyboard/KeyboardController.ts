@@ -104,6 +104,7 @@ export class KeyboardController {
             .map((note) => note.note);
 
         const ordered = direction === 'asc' ? [...notes].reverse() : notes;
+        console.log(ordered);
 
         ordered.forEach((note, index) => {
             setTimeout(() => this.audioEngine.playSample(note), index * 25);
