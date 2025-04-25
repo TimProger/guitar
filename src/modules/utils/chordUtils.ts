@@ -1,81 +1,78 @@
 const NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
 const chordTypeTable: Record<string, string> = {
-    '4,7': 'MAJ',
-    '3,7': 'MIN',
-    '3,7,10': 'MIN7',
-    '4,7,11': 'MAJ7',
+    '4,7': '',
+    '3,7': 'm',
+    '3,7,10': 'm7',
+    '4,7,11': 'maj7',
+    '4,7,9': '6',
 };
 
-type ChordResult = Record<string, string | null>;
+function getNoteIndex(note: string): number {
+    return NOTES.indexOf(note);
+}
 
-export function getChordType(candidateChord: string[]): ChordResult {
+export function getChordType(candidateChord: string[]): Record<string, string | null> | string {
     if (candidateChord.length < 2) {
-        return { Unknown: null };
+        return 'Unknown';
     }
 
-    // Удаляем дубликаты нот
-    const uniqueChord = [...new Set(candidateChord)];
-    if (uniqueChord.length !== candidateChord.length) {
-        candidateChord = uniqueChord;
-    }
+    // Remove duplicate notes
+    const uniqueChord = Array.from(new Set(candidateChord));
+    const result: Record<string, string | null> = {};
 
-    const result: ChordResult = {};
-
-    for (const referenceNote of candidateChord) {
+    for (const referenceNote of uniqueChord) {
         const intervals: number[] = [];
-        for (const note of candidateChord) {
+
+        for (const note of uniqueChord) {
             if (note !== referenceNote) {
-                const interval = (NOTES.indexOf(note) - NOTES.indexOf(referenceNote)) % 12;
+                const interval = (getNoteIndex(note) - getNoteIndex(referenceNote) + 12) % 12;
                 intervals.push(interval);
             }
         }
 
-        // Фильтруем типы аккордов по количеству интервалов
-        const numIntervals = candidateChord.length - 1;
-        for (const chordIntervalsStr of Object.keys(chordTypeTable)) {
-            const chordIntervals = chordIntervalsStr.split(',').map(Number);
-            if (chordIntervals.length === numIntervals) {
-                console.log(
-                    `Checking chord intervals: ${chordIntervals}, Subset size: ${chordIntervals.length}`
-                );
+        const numIntervals = uniqueChord.length - 1;
 
-                // Генерируем все комбинации интервалов
-                const subsets = getCombinations(intervals, chordIntervals.length);
+        // Filter only chord types matching the interval count
+        const matchingChordTypes = Object.keys(chordTypeTable).filter(
+            (key) => key.split(',').length === numIntervals
+        );
 
-                for (const subset of subsets) {
-                    const subsetKey = subset.sort((a, b) => a - b).join(',');
-                    if (chordTypeTable[subsetKey]) {
-                        result[subsetKey] = `${referenceNote} ${chordTypeTable[subsetKey]}`;
-                    } else {
-                        result[subsetKey] = null;
-                    }
+        for (const chordKey of matchingChordTypes) {
+            const targetIntervals = chordKey.split(',').map(Number);
+            const subsetSize = targetIntervals.length;
+
+            const combinations = getCombinations(intervals, subsetSize);
+            for (const subset of combinations) {
+                const sortedSubset = subset.slice().sort((a, b) => a - b);
+                const key = sortedSubset.join(',');
+
+                if (chordTypeTable[key]) {
+                    result[key] = `${referenceNote} ${chordTypeTable[key]}`;
+                } else {
+                    result[key] = null;
                 }
             }
         }
     }
 
-    console.log('Chord result:', result);
     return result;
 }
 
-// Вспомогательная функция для генерации комбинаций
-function getCombinations(arr: number[], k: number): number[][] {
-    const result: number[][] = [];
+// Helper function for combinations
+function getCombinations<T>(array: T[], size: number): T[][] {
+    if (size > array.length) return [];
 
-    function backtrack(start: number, current: number[]) {
-        if (current.length === k) {
-            result.push([...current]);
+    const result: T[][] = [];
+    const recurse = (start: number, combo: T[]) => {
+        if (combo.length === size) {
+            result.push(combo);
             return;
         }
-
-        for (let i = start; i < arr.length; i++) {
-            current.push(arr[i]);
-            backtrack(i + 1, current);
-            current.pop();
+        for (let i = start; i < array.length; i++) {
+            recurse(i + 1, [...combo, array[i]]);
         }
-    }
-
-    backtrack(0, []);
+    };
+    recurse(0, []);
     return result;
 }

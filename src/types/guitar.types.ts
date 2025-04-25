@@ -35,7 +35,7 @@ export type IStrings = {
 
 // Интерфейс для аккорда
 export interface IChord {
-    name: string;
+    name: string[];
     strings: IFret[];
 }
 

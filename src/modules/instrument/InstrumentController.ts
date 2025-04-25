@@ -125,7 +125,7 @@ export class InstrumentController {
 
     private createChordFromStrings(strings: IStrings): IChord {
         const chord: IChord = {
-            name: '',
+            name: [''],
             strings: [
                 { index: -1, note: '', isPressed: false },
                 { index: -1, note: '', isPressed: false },
@@ -148,12 +148,19 @@ export class InstrumentController {
             ...new Set(
                 Object.values(chord.strings)
                     .filter((note) => note.note)
-                    .map((note) => note.note)
+                    .map((note) => (note.note.includes('#') ? note.note.slice(0, 2) : note.note[0]))
             ),
         ];
 
-        const newName = getChordType(uniqueChordNotes);
-        console.log(newName, uniqueChordNotes);
+        const chordVariants = getChordType(uniqueChordNotes);
+        const chordNamesArray: string[] = [];
+        Object.entries(chordVariants).forEach(([_key, value]) => {
+            if (value) {
+                const [rootNote, chordType] = value.split(' ');
+                chordNamesArray.push(`${rootNote}${chordType}`);
+            }
+        });
+        chord.name = !!chordNamesArray.length ? chordNamesArray : ['Unknown'];
 
         return chord;
     }

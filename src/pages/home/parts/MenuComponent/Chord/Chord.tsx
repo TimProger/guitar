@@ -18,6 +18,7 @@ const ChordDiagram: React.FC<ChordDiagramProps> = ({
     chord,
 }) => {
     const [minFret, setMinFret] = useState<number>(0);
+    const [chordName, setChordName] = useState<number>(0);
 
     const strings = stringsManager.getStringsData();
 
@@ -85,7 +86,33 @@ const ChordDiagram: React.FC<ChordDiagramProps> = ({
                     );
                 })}
             </div>
-            <div className={s['chord-name']}>{chord.name}</div>
+            <div className={s['chord-name']}>
+                {(() => {
+                    if (chord.name.length > 1) {
+                        return (
+                            <div>
+                                <select
+                                    id={`tuning-input1-${position}`}
+                                    value={chordName}
+                                    onChange={(e) => setChordName(+e.target.value)}
+                                    className={`note-select`}
+                                >
+                                    {chord.name.map((_, index) => (
+                                        <option
+                                            value={index}
+                                            key={index}
+                                            className={s['chord-name-item']}
+                                        >
+                                            {chord.name[chordName]}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        );
+                    }
+                    return chord.name[0] || 'Unknown';
+                })()}
+            </div>
         </div>
     );
 };
