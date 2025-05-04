@@ -1,5 +1,5 @@
 import { IStrings, IStringNames, IGuitarObj } from '../../types/guitar.types';
-import { generateNoteSequence, generateFrets } from '../utils/fretUtils';
+import { generateNoteSequence, generateFrets } from '../moduleUtils/fretUtils';
 
 export class StringManager {
     private strings: IStrings;

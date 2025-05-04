@@ -5,7 +5,7 @@ import { AudioEngine } from '../audio/AudioEngine';
 import { StringManager } from './StringManager';
 import { ChordManager } from '../keyboard/ChordManager';
 import { InstrumentUtilities } from './InstrumentUtilities';
-import { getChordType } from '../utils/chordUtils';
+import { getChordType } from '../moduleUtils/chordUtils';
 
 export class InstrumentController {
     private stringManager: StringManager; // Менеджер струн
