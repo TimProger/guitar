@@ -62,6 +62,13 @@ export class KeyboardController {
             this.forceUpdate?.();
         }
 
+        // @ts-ignore
+        if (!!DEFAULT_KEYBINDS.CHORD_NOTE_PLAY[e.code]) {
+            // @ts-ignore
+            const note = DEFAULT_KEYBINDS.CHORD_NOTE_PLAY[e.code];
+            this.playCurrentChordNote(note);
+        }
+
         if ([DEFAULT_KEYBINDS.CHORD_PLAY.asc, DEFAULT_KEYBINDS.CHORD_PLAY.desc].includes(e.key)) {
             this.playCurrentChord(e.key === DEFAULT_KEYBINDS.CHORD_PLAY.asc ? 'asc' : 'desc');
         }
@@ -109,6 +116,16 @@ export class KeyboardController {
         ordered.forEach((note, index) => {
             setTimeout(() => this.audioEngine.playSample(note), index * 25);
         });
+    }
+
+    private playCurrentChordNote(index: number) {
+        const currentChord = this.chordManager.getCurrentChord();
+        if (!currentChord) return;
+
+        const note = currentChord.chord.strings[index];
+        if (note) {
+            this.audioEngine.playSample(note.note);
+        }
     }
 
     public cleanup() {
