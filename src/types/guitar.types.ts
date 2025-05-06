@@ -46,10 +46,12 @@ export interface IActiveChord {
     timestamp: number;
 }
 
+export type IGuitarTypes = 'guitar-acoustic' | 'guitar-electric' | 'guitar-bass';
+
 export interface IGuitarObj {
     type: string;
     name: string;
-    id: string;
+    id: IGuitarTypes;
     tuning: string[];
     stringsCount: number;
     fretsCount: number;

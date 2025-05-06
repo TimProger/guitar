@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { IStrings } from '@/types/guitar.types';
+import { IGuitarTypes, IStrings } from '@/types/guitar.types';
 import { InstrumentController } from '../../modules/instrument/InstrumentController';
 import StringComponent from './parts/StringComponent';
 import s from './styles.module.scss';
@@ -9,10 +9,15 @@ import MenuComponent from './parts/MenuComponent';
 
 interface IHomeProps {}
 
-const instrument = new InstrumentController(); // Один на всё приложение
-
 const Home: React.FC<IHomeProps> = ({}) => {
     const [stringsData, setStringsData] = useState<IStrings>([]);
+
+    // Берём параметр из URL (?instrument=guitar-electric)
+    const searchParams = new URLSearchParams(window.location.search);
+    const instrumentType = (searchParams.get('type') as IGuitarTypes) || 'guitar-acoustic'; // Дефолтное значение
+
+    // Создаём инстанс InstrumentController с нужным типом
+    const [instrument] = useState(() => new InstrumentController(instrumentType));
 
     const pressFret = (stringIndex: number, noteIndex: number) => {
         instrument.pressFret(stringIndex, noteIndex);

@@ -25,7 +25,6 @@ const MenuComponent: React.FC<IMenuProps> = ({ setStringsData, instrument }) => 
         startRegistration,
         guitarObjArray,
         selectedGuitarObj,
-        selectGuitarObj,
     } = useMenu({ setStringsData, instrument });
 
     const displayPages = () => {
@@ -73,7 +72,6 @@ const MenuComponent: React.FC<IMenuProps> = ({ setStringsData, instrument }) => 
                         onTuningChange={updateTuning}
                         guitarObjArray={guitarObjArray}
                         selectedGuitarObj={selectedGuitarObj}
-                        selectGuitarObj={selectGuitarObj}
                     />
                 );
         }

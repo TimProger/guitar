@@ -22,7 +22,6 @@ interface IUseMenuReturn {
     startRegistration: () => void;
     guitarObjArray: IGuitarObj[];
     selectedGuitarObj: IGuitarObj;
-    selectGuitarObj: (guitarObj: IGuitarObj) => void;
 }
 
 export const useMenu = ({ setStringsData, instrument }: IUseMenu): IUseMenuReturn => {
@@ -73,10 +72,6 @@ export const useMenu = ({ setStringsData, instrument }: IUseMenu): IUseMenuRetur
         instrument.getStringManager().setTuning(newTuning);
     };
 
-    const selectGuitarObj = (guitarObj: IGuitarObj) => {
-        instrument.setGuitarObj(guitarObj);
-    };
-
     return {
         volume,
         tuning,
@@ -90,6 +85,5 @@ export const useMenu = ({ setStringsData, instrument }: IUseMenu): IUseMenuRetur
         startRegistration,
         guitarObjArray,
         selectedGuitarObj,
-        selectGuitarObj,
     };
 };

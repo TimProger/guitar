@@ -41,10 +41,10 @@ export class AudioEngine {
         this.settings.guitar.release = value;
     }
 
-    async init(instrumentType: string = 'guitar-acoustic') {
+    async init() {
         this.status = 'stopped';
         this.cleanup(); // Очистка перед инициализацией
-        const samples = await this.sampleManager.loadSamples(instrumentType);
+        const samples = await this.sampleManager.loadSamples();
         this.sampler = new Sampler({
             urls: samples,
             baseUrl: `${API_BASE_URL}/static`,
@@ -52,7 +52,7 @@ export class AudioEngine {
             volume: this.settings.guitar.volume - 8,
             onload: () => {
                 this.status = 'playing';
-                console.log(`Samples for ${instrumentType} loaded`);
+                console.log(`Samples loaded`);
             },
         }).toDestination();
     }
@@ -72,9 +72,5 @@ export class AudioEngine {
         this.sampler?.dispose();
         this.activePlayers.forEach((p) => p.dispose());
         this.activePlayers.clear();
-    }
-
-    setInstrument(type: string) {
-        this.init(type);
     }
 }

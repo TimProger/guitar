@@ -1,4 +1,5 @@
 import { IFret } from '@/types/guitar.types';
+import { ALL_NOTES } from '../data';
 
 export function generateFrets(notes: string[]): IFret[] {
     const fretsObject: IFret[] = [];
@@ -10,8 +11,6 @@ export function generateFrets(notes: string[]): IFret[] {
 }
 
 export function generateNoteSequence(startNote: string, count: number): string[] {
-    const ALL_NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-
     // Парсим начальную ноту (пример: "D3" → ["D", "3"])
     const [, noteName, octaveStr] = startNote.match(/^([A-G]#?)(\d+)$/) || [];
     if (!noteName || !octaveStr) throw new Error(`Invalid note: ${startNote}`);

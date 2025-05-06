@@ -1,13 +1,8 @@
 import { AudioEngine } from '../audio/AudioEngine';
+import { tuningPresets } from '../data';
 import { InstrumentController } from './InstrumentController';
 
 type ITuningPreset = 'standard' | 'dropD' | 'openG' | 'custom';
-export const tuningPresets = {
-    standard: ['E4', 'B3', 'G3', 'D3', 'A2', 'E2'],
-    dropD: ['D2', 'A2', 'D3', 'G3', 'B3', 'E4'],
-    openG: ['D2', 'G2', 'D3', 'G3', 'B3', 'D4'],
-    custom: [], // Кастомный строй
-};
 
 interface IInstrumentSettings {
     getCurrentSettings(): InstrumentSettingsParams;

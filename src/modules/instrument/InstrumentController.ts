@@ -1,4 +1,4 @@
-import { IChord, IGuitarObj, IStrings } from '../../types/guitar.types';
+import { IChord, IGuitarObj, IGuitarTypes, IStrings } from '../../types/guitar.types';
 import { KeyboardController } from '../keyboard/KeyboardController';
 import { SampleManager } from '../audio/SampleManager';
 import { AudioEngine } from '../audio/AudioEngine';
@@ -6,6 +6,7 @@ import { StringManager } from './StringManager';
 import { ChordManager } from '../keyboard/ChordManager';
 import { InstrumentUtilities } from './InstrumentUtilities';
 import { getChordType } from '../moduleUtils/chordUtils';
+import { guitarObjArrayData } from '../data';
 
 export class InstrumentController {
     private stringManager: StringManager; // Менеджер струн
@@ -15,40 +16,15 @@ export class InstrumentController {
     private sampleManager: SampleManager; // Модуль для создания путей к сэмплам
     private utilities: InstrumentUtilities; // Утилиты для работы с инструментом
     protected forceUpdate: (() => void) | null = null; // Колбек для обновления UI
-    private guitarObjArray: IGuitarObj[] = [
-        {
-            type: 'guitar',
-            name: 'Acoustic Guitar',
-            id: 'guitar-acoustic',
-            tuning: ['E4', 'B3', 'G3', 'D3', 'A2', 'E2'],
-            stringsCount: 6,
-            fretsCount: 21,
-            image: 'acoustic-guitar.png',
-        },
-        {
-            type: 'guitar',
-            name: 'Electric Guitar',
-            id: 'guitar-electric',
-            tuning: ['E4', 'B3', 'G3', 'D3', 'A2', 'E2'],
-            stringsCount: 6,
-            fretsCount: 24,
-            image: 'electric-guitar.png',
-        },
-        {
-            type: 'guitar',
-            name: 'Bass Guitar',
-            id: 'guitar-bass',
-            tuning: ['G2', 'D2', 'A1', 'E1'],
-            stringsCount: 4,
-            fretsCount: 24,
-            image: 'bass-guitar.png',
-        },
-    ];
+    private guitarObjArray: IGuitarObj[] = [...guitarObjArrayData];
     private guitarObj: IGuitarObj = this.guitarObjArray[0];
 
-    constructor() {
-        this.sampleManager = new SampleManager(this.guitarObj.id);
-        this.stringManager = new StringManager(this.guitarObj);
+    constructor(guitarType: IGuitarTypes) {
+        const found =
+            this.guitarObjArray.find((el) => el.id === guitarType) || this.guitarObjArray[0];
+        this.guitarObj = found;
+        this.sampleManager = new SampleManager(found.id);
+        this.stringManager = new StringManager(found);
         this.chordManager = new ChordManager();
         this.audioEngine = new AudioEngine(this.sampleManager);
         this.keyboardController = new KeyboardController(this.chordManager, this.audioEngine);
@@ -73,18 +49,6 @@ export class InstrumentController {
 
     public getGuitarObj() {
         return this.guitarObj;
-    }
-
-    public setGuitarObj(guitarObj: IGuitarObj) {
-        this.guitarObj = guitarObj;
-        this.sampleManager = new SampleManager(this.guitarObj.id);
-        this.stringManager = new StringManager(this.guitarObj);
-        this.chordManager = new ChordManager();
-        this.audioEngine = new AudioEngine(this.sampleManager);
-        this.keyboardController = new KeyboardController(this.chordManager, this.audioEngine);
-        this.utilities = new InstrumentUtilities(this);
-        this.initialize();
-        this.forceUpdate?.();
     }
 
     public utilityMethods(): InstrumentUtilities {

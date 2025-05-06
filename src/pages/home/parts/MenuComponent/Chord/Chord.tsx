@@ -44,7 +44,6 @@ const ChordDiagram: React.FC<ChordDiagramProps> = ({
         <div className={classNames(s.chord, { [s.chord_active]: position === selectedChordId })}>
             <div className={s.fretboard}>
                 <div className={s['fret-number']}></div>
-
                 {[1, 2, 3, 4].map((fretNum) => (
                     <div key={`fret-${fretNum}`} className={s['fret-label']}>
                         {minFret > 0 ? minFret + fretNum - 1 : fretNum}
@@ -97,15 +96,17 @@ const ChordDiagram: React.FC<ChordDiagramProps> = ({
                                     onChange={(e) => setChordName(+e.target.value)}
                                     className={`note-select`}
                                 >
-                                    {chord.name.map((_, index) => (
-                                        <option
-                                            value={index}
-                                            key={index}
-                                            className={s['chord-name-item']}
-                                        >
-                                            {chord.name[chordName]}
-                                        </option>
-                                    ))}
+                                    {chord.name.map((_, index) => {
+                                        return (
+                                            <option
+                                                value={index}
+                                                key={index}
+                                                className={s['chord-name-item']}
+                                            >
+                                                {chord.name[index]}
+                                            </option>
+                                        );
+                                    })}
                                 </select>
                             </div>
                         );

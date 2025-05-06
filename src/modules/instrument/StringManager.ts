@@ -23,7 +23,6 @@ export class StringManager {
         const stringNames = this.getStringNames();
 
         return stringNames.map((name, index) => {
-            console.log(name, index, this.guitarObj.tuning[index]);
             return {
                 name,
                 frets: generateFrets(

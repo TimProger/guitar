@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import s from './styles.module.scss';
 import classNames from 'classnames';
-import { tuningPresets } from '../../../../../modules/instrument/InstrumentSettings';
+import { tuningPresets } from '../../../../../modules/data';
 import { IGuitarObj } from '@/types/guitar.types';
 
 interface ISettingsProps {
@@ -11,7 +11,6 @@ interface ISettingsProps {
     onTuningChange: (tuning: string[]) => void;
     guitarObjArray: IGuitarObj[];
     selectedGuitarObj: IGuitarObj;
-    selectGuitarObj: (guitarObj: IGuitarObj) => void;
 }
 
 const strings = ['e', 'A', 'D', 'G', 'B', 'E'];
@@ -25,7 +24,6 @@ const Settings: React.FC<ISettingsProps> = ({
     onTuningChange,
     guitarObjArray,
     selectedGuitarObj,
-    selectGuitarObj,
 }) => {
     const [localTuning, setLocalTuning] = useState<
         {
@@ -186,7 +184,7 @@ const Settings: React.FC<ISettingsProps> = ({
                         value={selectedGuitarObj.id}
                         onChange={(e) => {
                             const selected = guitarObjArray.find((g) => g.id === e.target.value);
-                            if (selected) selectGuitarObj(selected);
+                            if (selected) window.location.replace(`/?type=${selected.id}`);
                         }}
                     >
                         {guitarObjArray.map((guitarObj) => (

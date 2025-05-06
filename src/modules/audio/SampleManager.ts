@@ -1,24 +1,7 @@
-type SampleMap = Record<string, string>;
+import { IGuitarTypes } from '@/types/guitar.types';
+import { instrumentNotes } from '../data';
 
-const NOTES = [
-    'D2',
-    'E2',
-    'F2',
-    'G2',
-    'B2',
-    'C3',
-    'D3',
-    'E3',
-    'F3',
-    'G3',
-    'B3',
-    'C4',
-    'D4',
-    'E4',
-    'F4',
-    'G4',
-    'B4',
-];
+type SampleMap = Record<string, string>;
 
 export function createSampleMap(instrumentType: string, NOTES: string[]) {
     const sampleMap: Record<string, string> = {};
@@ -34,19 +17,22 @@ export function createSampleMap(instrumentType: string, NOTES: string[]) {
 
 export class SampleManager {
     private samplesCache: Map<string, SampleMap> = new Map();
-    private selectedGuitarType = 'guitar-acoustic'; // Тип гитары
+    private selectedGuitarType: IGuitarTypes = 'guitar-acoustic'; // Тип гитары
 
-    constructor(selectedGuitarType: string) {
+    constructor(selectedGuitarType: IGuitarTypes) {
         this.selectedGuitarType = selectedGuitarType;
     }
 
     // Загрузка сэмплов под переданный тип инструмента
-    async loadSamples(instrumentType: string): Promise<SampleMap> {
-        if (this.samplesCache.has(instrumentType)) {
-            return this.samplesCache.get(instrumentType)!;
+    async loadSamples(): Promise<SampleMap> {
+        if (this.samplesCache.has(this.selectedGuitarType)) {
+            return this.samplesCache.get(this.selectedGuitarType)!;
         }
 
-        const sampleMap: SampleMap = createSampleMap(`/${this.selectedGuitarType}`, NOTES);
+        const sampleMap: SampleMap = createSampleMap(
+            `/${this.selectedGuitarType}`,
+            instrumentNotes[this.selectedGuitarType]
+        );
 
         return sampleMap;
     }
