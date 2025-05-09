@@ -1,0 +1,61 @@
+@import '../../../vars';
+
+.button {
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    width: 120px;
+
+    &.full {
+        width: 100%;
+    }
+
+    &.primary {
+        background-color: $block-main;
+        color: $text-third;
+
+        &:hover {
+            background-color: lighten($block-main, 5%);
+        }
+
+        &:active {
+            background-color: darken($block-main, 5%);
+        }
+    }
+
+    &.secondary {
+        background-color: $block-sec;
+        color: $text-main;
+
+        &:hover {
+            background-color: lighten($block-sec, 5%);
+        }
+
+        &:active {
+            background-color: darken($block-sec, 5%);
+        }
+    }
+
+    &.text {
+        background: none;
+        color: $text-main;
+        padding: 4px 8px;
+
+        &:hover {
+            color: lighten($text-main, 10%);
+        }
+
+        &:active {
+            color: darken($text-main, 10%);
+        }
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}

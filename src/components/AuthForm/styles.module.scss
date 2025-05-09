@@ -1,0 +1,74 @@
+@import '../../vars';
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    max-width: 400px;
+    padding: 24px;
+    border-radius: 8px;
+
+    h2 {
+        text-align: center;
+        margin-bottom: 8px;
+    }
+
+    .inputGroup {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        label {
+            font-size: 0.9rem;
+        }
+
+        input {
+            padding: 0.75rem;
+            border: 1px solid #2a282d;
+            border-radius: 4px;
+            font-size: 1rem;
+
+            &:focus {
+                outline: none;
+                border-color: #4a484d;
+            }
+        }
+    }
+
+    .submitButton {
+        padding: 0.75rem;
+        background: #4a484d;
+        border: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.2s;
+
+        &:hover {
+            background: #5a585d;
+        }
+    }
+
+    .switchMode {
+        margin-top: 1.5rem;
+        text-align: center;
+
+        p {
+            margin: 0;
+        }
+
+        button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            font-size: 1rem;
+            color: $text-sec;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}

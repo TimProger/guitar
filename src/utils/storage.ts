@@ -12,13 +12,13 @@ export const Storage: IStorage = {
      * Добавление элемента в хранилище
      */
     set: (name, item) => {
-        localStorage.setItem('muzlow_' + name, JSON.stringify(item));
+        localStorage.setItem('guitar_' + name, JSON.stringify(item));
     },
     /**
      * Получение элемента из хранилища
      */
     get: (name) => {
-        const item = localStorage.getItem('muzlow_' + name);
+        const item = localStorage.getItem('guitar_' + name);
 
         if (item) {
             return JSON.parse(item);
@@ -28,6 +28,6 @@ export const Storage: IStorage = {
      * Добавление элемента в хранилище
      */
     delete: (name) => {
-        localStorage.removeItem('muzlow_' + name);
+        localStorage.removeItem('guitar_' + name);
     },
 };

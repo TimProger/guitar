@@ -55,14 +55,6 @@ export class InstrumentController {
         return this.utilities;
     }
 
-    public getSampleManager(): SampleManager {
-        return this.sampleManager;
-    }
-
-    public getChordManager(): ChordManager {
-        return this.chordManager;
-    }
-
     public getAudioEngine(): AudioEngine {
         return this.audioEngine;
     }
@@ -82,12 +74,14 @@ export class InstrumentController {
     }
 
     public startChordRegistration() {
+        // Инициируем начало регистрации аккорда
         const strings = this.stringManager.getStringsData();
         const chord = this.createChordFromStrings(strings);
         this.keyboardController.startChordRegistration(chord);
     }
 
     private createChordFromStrings(strings: IStrings): IChord {
+        // Создаём аккорд из зажатых на струнах нот
         const chord: IChord = {
             name: [''],
             strings: [
