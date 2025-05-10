@@ -1,4 +1,5 @@
 @use 'sass:math';
+@import '../../../../vars';
 $fret-ratio: 1 / (2 pow (1/12)); // ≈ 0.94387431268
 
 .string {
@@ -73,7 +74,7 @@ $fret-ratio: 1 / (2 pow (1/12)); // ≈ 0.94387431268
 
             &_pressed {
                 opacity: 1;
-                background-color: #d17112; /* Зеленый цвет для нажатых ладов */
+                background-color: $block-main; /* Зеленый цвет для нажатых ладов */
                 z-index: 3 !important;
             }
 

@@ -1,3 +1,5 @@
+@import '../../vars';
+
 .modalOverlay {
     position: fixed;
     top: 0;
@@ -23,7 +25,7 @@
 }
 
 .modalContent {
-    background: linear-gradient(to top, #1a181b 0%, #2a282d 100%);
+    background: $block-third;
     padding: 2rem;
     border-radius: 8px;
     position: relative;

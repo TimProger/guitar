@@ -4,7 +4,7 @@ import s from './styles.module.scss';
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     label?: string;
     full?: boolean;
-    error?: string;
+    error?: string | undefined;
 }
 
 const Input: React.FC<InputProps> = ({ label, full, error, className, ...props }) => {

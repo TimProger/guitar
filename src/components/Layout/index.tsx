@@ -1,52 +1,60 @@
 import React, { useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import s from './styles.module.scss';
 import Modal from '../Modal';
 import AuthForm from '../AuthForm';
+import { useUser } from '../../contexts/UserContext';
 import { Storage } from '../../utils/storage';
 
-interface LayoutProps {
-    children: React.ReactNode;
-}
-
-const Layout = ({ children }: LayoutProps) => {
-    const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate();
+    const { user, setUser } = useUser();
 
-    const handleProfileClick = (e: React.MouseEvent) => {
-        if (!Storage.get('accessToken')) {
-            e.preventDefault();
-            setIsAuthModalOpen(true);
+    const handleProfileClick = () => {
+        if (user) {
+            navigate('/profile');
+        } else {
+            setIsModalOpen(true);
         }
     };
 
     const handleAuthSuccess = () => {
-        setIsAuthModalOpen(false);
+        setIsModalOpen(false);
         navigate('/profile');
+    };
+
+    const handleLogout = () => {
+        Storage.delete('accessToken');
+        setUser(null);
+        navigate('/');
     };
 
     return (
         <div className={s.layout}>
-            <header>
-                <div>
-                    <NavLink to={'/'} className={s.profileLink}>
-                        <h2>Guitar Emulator</h2>
-                    </NavLink>
-                    <div className={s.profileLinks}>
-                        <NavLink
-                            to={'/profile'}
-                            className={s.profileLink}
-                            onClick={handleProfileClick}
-                        >
-                            <p>Профиль</p>
-                        </NavLink>
+            <header className={s.header}>
+                <nav className={s.nav}>
+                    <a href="/" className={s.logo}>
+                        Guitar Trainer
+                    </a>
+                    <div className={s.navLinks}>
+                        {user ? (
+                            <>
+                                <span className={s.userEmail}>{user.email}</span>
+                                <button onClick={handleLogout} className={s.logoutButton}>
+                                    Выйти
+                                </button>
+                            </>
+                        ) : (
+                            <button onClick={handleProfileClick} className={s.profileLink}>
+                                Профиль
+                            </button>
+                        )}
                     </div>
-                </div>
+                </nav>
             </header>
-
-            <main>{children}</main>
-
-            <Modal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)}>
+            <main className={s.main}>{children}</main>
+            <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
                 <AuthForm onSuccess={handleAuthSuccess} />
             </Modal>
         </div>

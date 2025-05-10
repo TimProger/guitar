@@ -6,10 +6,11 @@ import './_globals.scss';
 import { Route, Routes } from 'react-router-dom';
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
+import { UserProvider } from './contexts/UserContext';
 
 const App: React.FC = () => {
     return (
-        <div>
+        <UserProvider>
             <Layout>
                 <Routes>
                     <Route path="/" element={<HomePage />} />
@@ -23,7 +24,7 @@ const App: React.FC = () => {
                     />
                 </Routes>
             </Layout>
-        </div>
+        </UserProvider>
     );
 };
 

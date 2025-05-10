@@ -2,9 +2,19 @@ import React, { useState } from 'react';
 import s from './styles.module.scss';
 import Input from '../UI/Input';
 import Button from '../UI/Button';
+import axios from 'axios';
+import { $api } from '../../http/axios';
+import { Storage } from '../../utils/storage';
 
 interface AuthFormProps {
     onSuccess: () => void;
+}
+
+interface FormErrors {
+    email?: string;
+    password?: string;
+    confirmPassword?: string;
+    general?: string;
 }
 
 const AuthForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
@@ -12,12 +22,49 @@ const AuthForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [errors, setErrors] = useState<FormErrors>({});
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Здесь будет логика авторизации
-        console.log('Form submitted:', { email, password, mode });
-        onSuccess();
+        setErrors({});
+
+        if (mode === 'register' && password !== confirmPassword) {
+            setErrors({ confirmPassword: 'Пароли не совпадают' });
+            return;
+        }
+
+        try {
+            const endpoint = `/auth/${mode}`;
+            const response = await $api.post(endpoint, {
+                email,
+                password,
+            });
+
+            if (response.status === 200) {
+                Storage.set('accessToken', response.data.access_token);
+                onSuccess();
+            }
+        } catch (err) {
+            if (axios.isAxiosError(err)) {
+                const errorData = err.response?.data;
+                if (errorData?.fields) {
+                    setErrors(errorData.fields);
+                } else {
+                    switch (errorData?.detail) {
+                        case 'Incorrect email or password':
+                            setErrors({ general: 'Неверный email или пароль' });
+                            break;
+                        case 'User already exists':
+                            setErrors({ email: 'Пользователь уже существует' });
+                            break;
+                        default:
+                            setErrors({ general: 'Произошла ошибка при авторизации' });
+                    }
+                }
+            } else {
+                setErrors({ general: 'Произошла неизвестная ошибка' });
+            }
+        }
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -30,6 +77,8 @@ const AuthForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
         <form className={s.form} onSubmit={handleSubmit} autoComplete="off">
             <h2>{mode === 'login' ? 'Вход' : 'Регистрация'}</h2>
 
+            {errors.general && <div className={s.error}>{errors.general}</div>}
+
             <Input
                 full
                 type="email"
@@ -38,6 +87,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
                 onChange={(e) => setEmail(e.target.value)}
                 autoComplete={mode === 'login' ? 'username' : 'new-username'}
                 required
+                error={errors.email}
             />
 
             <Input
@@ -48,6 +98,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
                 onChange={(e) => setPassword(e.target.value)}
                 autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
                 required
+                error={errors.password}
             />
 
             {mode === 'register' && (
@@ -59,6 +110,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     autoComplete="new-password"
                     required
+                    error={errors.confirmPassword}
                 />
             )}
 
