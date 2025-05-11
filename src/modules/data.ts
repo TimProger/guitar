@@ -29,7 +29,7 @@ export const instrumentNotes = {
 export const guitarObjArrayData: IGuitarObj[] = [
     {
         type: 'guitar',
-        name: 'Acoustic Guitar',
+        name: 'Acoustic Guitar (steel)',
         id: 'guitar-acoustic',
         tuning: ['E4', 'B3', 'G3', 'D3', 'A2', 'E2'],
         stringsCount: 6,
@@ -38,7 +38,7 @@ export const guitarObjArrayData: IGuitarObj[] = [
     },
     {
         type: 'guitar',
-        name: 'Electric Guitar',
+        name: 'Electric Guitar (clean)',
         id: 'guitar-electric',
         tuning: ['E4', 'B3', 'G3', 'D3', 'A2', 'E2'],
         stringsCount: 6,
@@ -47,7 +47,7 @@ export const guitarObjArrayData: IGuitarObj[] = [
     },
     {
         type: 'guitar',
-        name: 'Bass Guitar',
+        name: 'Electric Bass (finger)',
         id: 'guitar-bass',
         tuning: ['G2', 'D2', 'A1', 'E1'],
         stringsCount: 4,

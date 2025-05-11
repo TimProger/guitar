@@ -1,3 +1,4 @@
+import { $api } from '../../../../http/axios';
 import { InstrumentController } from '@/modules/instrument/InstrumentController';
 import { IChord, IGuitarObj, IStrings } from '@/types/guitar.types';
 import { useEffect, useState } from 'react';
@@ -22,6 +23,12 @@ interface IUseMenuReturn {
     startRegistration: () => void;
     guitarObjArray: IGuitarObj[];
     selectedGuitarObj: IGuitarObj;
+    isRecording: boolean;
+    handleRecordingToggle: () => void;
+    isPlaying: boolean;
+    playRecordedNotesHandler: () => void;
+    isUploading: boolean;
+    uploadRecordedNotesHandler: () => void;
 }
 
 export const useMenu = ({ setStringsData, instrument }: IUseMenu): IUseMenuReturn => {
@@ -46,6 +53,9 @@ export const useMenu = ({ setStringsData, instrument }: IUseMenu): IUseMenuRetur
         instrument.startChordRegistration();
         setSelectedChordId(-1);
     };
+    const [isRecording, setIsRecording] = useState<boolean>(false);
+    const [isPlaying, setIsPlaying] = useState<boolean>(false);
+    const [isUploading, setIsUploading] = useState<boolean>(false);
 
     useEffect(() => {
         instrument.setForceUpdate(() => {
@@ -58,6 +68,48 @@ export const useMenu = ({ setStringsData, instrument }: IUseMenu): IUseMenuRetur
             triggerUpdate(); // Запускаем обновление компонента
         });
     }, [setStringsData]);
+
+    const handleRecordingToggle = () => {
+        if (isRecording) {
+            const recordedNotes = instrument.stopRecording();
+            console.log('Recorded notes:', recordedNotes);
+            setIsRecording(false);
+        } else {
+            instrument.startRecording();
+            setIsRecording(true);
+        }
+    };
+
+    const playRecordedNotesHandler = () => {
+        if (isRecording) return;
+        setIsPlaying(true);
+        instrument.getAudioEngine().playRecordedNotes(() => setIsPlaying(false));
+    };
+
+    const uploadRecordedNotesHandler = () => {
+        if (isRecording) return;
+        setIsUploading(true);
+        const recordedNotes = instrument
+            .getAudioEngine()
+            .getRecordedNotes()
+            .map((el) => {
+                return {
+                    ...el,
+                    duration: el.duration ? +el.duration?.replace('n', '') : 8,
+                };
+            });
+        $api.post('/midi/generate', {
+            name: instrument.getGuitarObj().name,
+            instrument_name: instrument.getGuitarObj().name,
+            notes: recordedNotes,
+        })
+            .then((res) => {
+                console.log('Uploaded notes:', res);
+            })
+            .finally(() => {
+                setIsUploading(false);
+            });
+    };
 
     const updateVolume = (value: number) => {
         setVolume(value);
@@ -85,5 +137,11 @@ export const useMenu = ({ setStringsData, instrument }: IUseMenu): IUseMenuRetur
         startRegistration,
         guitarObjArray,
         selectedGuitarObj,
+        isRecording,
+        handleRecordingToggle,
+        isPlaying,
+        playRecordedNotesHandler,
+        isUploading,
+        uploadRecordedNotesHandler,
     };
 };

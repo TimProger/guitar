@@ -1,0 +1,95 @@
+@import '../../../../vars';
+
+.midiList {
+    width: 100%;
+    max-width: 800px;
+
+    h2 {
+        color: white;
+        margin-bottom: 20px;
+        font-size: 24px;
+    }
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.midiItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: $block-sec;
+    border: 1px solid $border-color-sec;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.midiInfo {
+    h3 {
+        color: white;
+        margin: 0 0 5px 0;
+        font-size: 18px;
+    }
+
+    p {
+        color: $text-third;
+        margin: 0;
+        font-size: 14px;
+    }
+}
+
+.midiActions {
+    display: flex;
+    gap: 10px;
+}
+
+.playButton,
+.downloadButton {
+    padding: 8px 16px;
+    border: 1px solid $border-color-main;
+    border-radius: 4px;
+    background-color: $block-sec;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+        background-color: $block-sec-hover;
+    }
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.pageButton {
+    padding: 8px 16px;
+    border: 1px solid $border-color-main;
+    border-radius: 4px;
+    background-color: $block-sec;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover:not(:disabled) {
+        background-color: red;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
+.pageInfo {
+    color: white;
+    font-size: 14px;
+}

@@ -25,6 +25,12 @@ const MenuComponent: React.FC<IMenuProps> = ({ setStringsData, instrument }) => 
         startRegistration,
         guitarObjArray,
         selectedGuitarObj,
+        isRecording,
+        handleRecordingToggle,
+        isPlaying,
+        playRecordedNotesHandler,
+        isUploading,
+        uploadRecordedNotesHandler,
     } = useMenu({ setStringsData, instrument });
 
     const displayPages = () => {
@@ -32,35 +38,55 @@ const MenuComponent: React.FC<IMenuProps> = ({ setStringsData, instrument }) => 
             case 'chords':
                 const chordPositions = Array.from({ length: 8 }, (_, i) => i);
                 return (
-                    <div className={s.chords}>
-                        <div
-                            tabIndex={0}
-                            role="button"
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                    startRegistration();
-                                } else {
-                                    (e.currentTarget as HTMLElement).blur();
-                                }
-                            }}
-                            onClick={() => startRegistration()}
-                            className={classNames(s.chord, s.chord_add, {
-                                [s.chord_active]: selectedChordId === -1,
-                            })}
+                    <div className={s.chordsContainer}>
+                        <button
+                            className={`${s.menuButton} ${isRecording ? s.active : ''}`}
+                            onClick={handleRecordingToggle}
                         >
-                            +
+                            Record
+                        </button>
+                        <button
+                            className={`${s.menuButton} ${isPlaying ? s.active : ''}`}
+                            onClick={playRecordedNotesHandler}
+                        >
+                            Play
+                        </button>
+                        <button
+                            className={`${s.menuButton} ${isUploading ? s.active : ''}`}
+                            onClick={uploadRecordedNotesHandler}
+                        >
+                            Upload
+                        </button>
+                        <div className={s.chords}>
+                            <div
+                                tabIndex={0}
+                                role="button"
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        startRegistration();
+                                    } else {
+                                        (e.currentTarget as HTMLElement).blur();
+                                    }
+                                }}
+                                onClick={() => startRegistration()}
+                                className={classNames(s.chord, s.chord_add, {
+                                    [s.chord_active]: selectedChordId === -1,
+                                })}
+                            >
+                                +
+                            </div>
+                            {chordPositions.map((position) => {
+                                return (
+                                    <Chord
+                                        selectedChordId={selectedChordId}
+                                        position={position}
+                                        key={position}
+                                        chord={activeChords[position]}
+                                        stringsManager={instrument.getStringManager()}
+                                    />
+                                );
+                            })}
                         </div>
-                        {chordPositions.map((position) => {
-                            return (
-                                <Chord
-                                    selectedChordId={selectedChordId}
-                                    position={position}
-                                    key={position}
-                                    chord={activeChords[position]}
-                                    stringsManager={instrument.getStringManager()}
-                                />
-                            );
-                        })}
                     </div>
                 );
             case 'settings':

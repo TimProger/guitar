@@ -7,6 +7,7 @@ import { ChordManager } from '../keyboard/ChordManager';
 import { InstrumentUtilities } from './InstrumentUtilities';
 import { getChordType } from '../moduleUtils/chordUtils';
 import { guitarObjArrayData } from '../data';
+import { INote } from '@/types/guitar.types';
 
 export class InstrumentController {
     private stringManager: StringManager; // Менеджер струн
@@ -18,6 +19,7 @@ export class InstrumentController {
     protected forceUpdate: (() => void) | null = null; // Колбек для обновления UI
     private guitarObjArray: IGuitarObj[] = [...guitarObjArrayData];
     private guitarObj: IGuitarObj = this.guitarObjArray[0];
+    private isRecording: boolean = false;
 
     constructor(guitarType: IGuitarTypes) {
         const found =
@@ -126,5 +128,23 @@ export class InstrumentController {
     public cleanup() {
         this.audioEngine.cleanup();
         this.keyboardController.cleanup();
+    }
+
+    public startRecording() {
+        this.isRecording = true;
+        this.audioEngine.startRecording();
+    }
+
+    public stopRecording(): INote[] {
+        this.isRecording = false;
+        return this.audioEngine.stopRecording();
+    }
+
+    public isCurrentlyRecording(): boolean {
+        return this.isRecording;
+    }
+
+    public getRecordedNotes(): INote[] {
+        return this.audioEngine.getRecordedNotes();
     }
 }

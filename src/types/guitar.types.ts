@@ -57,3 +57,10 @@ export interface IGuitarObj {
     fretsCount: number;
     image: string;
 }
+
+export interface INote {
+    note: string;
+    time?: number;
+    duration?: string;
+    velocity?: number;
+}
